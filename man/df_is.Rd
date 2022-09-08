@@ -9,18 +9,28 @@ df_is(df, type)
 \arguments{
 \item{df}{The data frame.}
 
-\item{type}{The type you expect the columns to have. It must be one of the R base types: 'character', 'factor', 'integer', 'numeric' or 'logical'.}
+\item{type}{The type you expect the columns to have.
+It must be one of the R base types:
+- 'character' ;
+- 'factor' ;
+- 'integer' ;
+- 'numeric' ;
+- 'logical'.}
 }
 \value{
 \code{TRUE} or \code{FALSE}.
 }
 \description{
-This method tests if the columns of a data frame are all of the same type.
+df_is
+This function tests if the columns of a data frame are all of the same type.
 }
 \examples{
 # Test if a data frame contains only integers
 df <- data.frame(a = c(1, 4), b = c(6, 5))
-df_is(df, "integer") # should return FALSE since in R all integers are converted to numeric by default.
-df_is(df, "numeric") # should return TRUE.
+# should return FALSE since in R all integers are converted to
+# numeric by default.
+df_is(df, "integer")
+# should return TRUE.
+df_is(df, "numeric")
 
 }

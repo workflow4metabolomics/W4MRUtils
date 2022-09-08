@@ -82,8 +82,9 @@ check		: quick_build
 clean		:
 	@-ls $(package)_$(version).tar.gz  2> /dev/null | xargs -I file echo "Deleting "file
 	@-$(RM) $(package)_$(version).tar.gz 2> /dev/null
+	@-$(RM) NAMESPACE 2> /dev/null
 
-doc			: quick_install
+doc			: clean quick_install
 	@echo "Generating doc..."
 	@$(R) -q -e "rmarkdown::render('README.Rmd')"
 	@$(R) -q -e "devtools::document('.')"

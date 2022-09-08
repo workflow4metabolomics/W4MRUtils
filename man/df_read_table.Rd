@@ -4,22 +4,28 @@
 \alias{df_read_table}
 \title{Data frame loading from a file.}
 \usage{
-df_read_table(file, force.numeric = FALSE, ...)
+df_read_table(file, force_numeric = FALSE, ...)
 }
 \arguments{
-\item{force.numeric}{If set to TRUE, all integer columns will be converted to numeric.}
+\item{file}{The path to the file you want to load. See
+\code{read.table()} documentation for more information.}
+
+\item{force_numeric}{If set to TRUE, all integer columns will be
+converted to numeric.}
 }
 \value{
 The loaded data frame.
 }
 \description{
-Reads a data frame from a file and possibly convert integer columns to numeric. This method calls the built-in \code{read.table()} method and then \code{df_force_numeric()}.
+df_read_table
+Reads a data frame from a file and possibly convert integer columns to
+numeric. This function calls the built-in \code{read.table()} method and
+then \code{df_force_numeric()}.
 }
 \examples{
 \dontrun{
-
-}
 # Load a data frame from a file and convert integer columns
-df <- df_read_table("/my/path/to/my/csv/file.csv", sep = ",", force.numeric = TRUE)
+df <- df_read_table("/path/to/file.csv", sep = ",", force_numeric = TRUE)
+}
 
 }

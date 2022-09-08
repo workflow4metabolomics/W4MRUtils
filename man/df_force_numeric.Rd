@@ -9,12 +9,17 @@ df_force_numeric(df, cols = NULL)
 \arguments{
 \item{df}{The data frame.}
 
-\item{cols}{The set of columns to convert to numeric. By default (when set to \code{NULL}) all integer columns are converted. Set it to a character vector containing the names of the columns you want to convert, or ton integer vector containing the indices of the columns. Can be used to force conversion of non integer columns.}
+\item{cols}{The set of columns to convert to numeric.
+By default (when set to \code{NULL}) all integer columns are converted.
+Set it to a character vector containing the names of the columns you
+want to convert, or ton integer vector containing the indices of the
+columns. Can be used to force conversion of non integer columns.}
 }
 \value{
 The converted data frame.
 }
 \description{
+df_force_numeric
 Converts integer columns of a data frame into numeric.
 }
 \examples{
