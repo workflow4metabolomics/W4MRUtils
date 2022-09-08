@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+W4MRUtils_*.tar.gz
+README.html
+
+inst/doc
