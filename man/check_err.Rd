@@ -7,7 +7,7 @@
 check_err(err_stock)
 }
 \arguments{
-\item{err_stock:}{vector of results returned by check functions}
+\item{err_stock}{vector of results returned by check functions}
 }
 \description{
 check_err

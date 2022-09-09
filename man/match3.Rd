@@ -7,11 +7,11 @@
 match3(data_matrix, sample_metadata, variable_metadata)
 }
 \arguments{
-\item{data_matrix}{= data.frame containing data_matrix}
+\item{data_matrix}{data.frame containing data_matrix}
 
-\item{sample_metadata}{= data.frame containing sample_metadata}
+\item{sample_metadata}{data.frame containing sample_metadata}
 
-\item{variable_metadata}{= data.frame containing variable_metadata}
+\item{variable_metadata}{data.frame containing variable_metadata}
 }
 \description{
 match3

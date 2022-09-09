@@ -7,11 +7,11 @@
 match2(data_matrix, metadata, metadata_type)
 }
 \arguments{
-\item{data_matrix:}{data.frame containing data_matrix}
+\item{data_matrix}{data.frame containing data_matrix}
 
-\item{metadata:}{data.frame containing sample_metadata or variable_metadata}
+\item{metadata}{data.frame containing sample_metadata or variable_metadata}
 
-\item{metadata_type:}{"sample" or "variable" depending on metadata content}
+\item{metadata_type}{"sample" or "variable" depending on metadata content}
 }
 \description{
 match2

@@ -12,6 +12,8 @@ df_read_table(file, force_numeric = FALSE, ...)
 
 \item{force_numeric}{If set to TRUE, all integer columns will be
 converted to numeric.}
+
+\item{...}{Parameter to transmit to the read.table function.}
 }
 \value{
 The loaded data frame.

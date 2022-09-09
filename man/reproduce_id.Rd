@@ -7,16 +7,18 @@
 reproduce_id(data_matrix, metadata, metadata_type, id_match)
 }
 \arguments{
-\item{data_matrix:}{data.frame containing data_matrix}
+\item{data_matrix}{data.frame containing data_matrix}
 
-\item{metadata:}{data.frame containing samplemetadata or variablemetadata}
+\item{metadata}{data.frame containing samplemetadata or variablemetadata}
 
-\item{metadata_type:}{"sample" or "variable" depending on metadata content}
+\item{metadata_type}{"sample" or "variable" depending on metadata content}
 
-\item{id_match:}{'id_match' element produced by stock_id}
+\item{id_match}{'id_match' element produced by stock_id}
 }
 \description{
 reproduce_id
+reproduce_id reinjects original identifiers and original order into
+final tables
 }
 \examples{
 \dontrun{

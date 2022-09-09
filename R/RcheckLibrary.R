@@ -16,7 +16,7 @@ NULL
 #' @description check_err
 #' Generic function to return an error if problems have been encountered
 #'
-#' @param err_stock: vector of results returned by check functions
+#' @param err_stock vector of results returned by check functions
 #'
 #' @author M.Petera
 #' @export
@@ -32,10 +32,9 @@ check_err <- function(err_stock) {
 #' To check if data_matrix and (variable or sample)metadata match regarding
 #'  identifiers
 #'
-#' @param data_matrix: data.frame containing data_matrix
-#' @param metadata: data.frame containing sample_metadata or variable_metadata
-#' @param metadata_type: "sample" or "variable" depending on metadata content
-#'
+#' @param data_matrix data.frame containing data_matrix
+#' @param metadata data.frame containing sample_metadata or variable_metadata
+#' @param metadata_type "sample" or "variable" depending on metadata content
 #' @author M.Petera
 #' @export
 match2 <- function(data_matrix, metadata, metadata_type) {
@@ -119,9 +118,9 @@ match2 <- function(data_matrix, metadata, metadata_type) {
 #' @description match3
 #' To check if the 3 standard tables match regarding identifiers
 #'
-#' @param data_matrix = data.frame containing data_matrix
-#' @param sample_metadata = data.frame containing sample_metadata
-#' @param variable_metadata = data.frame containing variable_metadata
+#' @param data_matrix data.frame containing data_matrix
+#' @param sample_metadata data.frame containing sample_metadata
+#' @param variable_metadata data.frame containing variable_metadata
 #'
 #' @author M.Petera
 #' @export

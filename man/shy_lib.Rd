@@ -6,6 +6,9 @@
 \usage{
 shy_lib(...)
 }
+\arguments{
+\item{...}{Names of library to load}
+}
 \description{
 shy_lib
 Function to call packages without printing all the verbose

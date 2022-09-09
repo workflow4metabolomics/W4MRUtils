@@ -1,4 +1,5 @@
 #' @import methods
+#' @importFrom utils read.table
 NULL
 
 #' @title Test type of a data frame.
@@ -80,6 +81,7 @@ df_force_numeric <- function(df, cols = NULL) {
 #'    \code{read.table()} documentation for more information.
 #' @param   force_numeric   If set to TRUE, all integer columns will be
 #'    converted to numeric.
+#' @param   ...   Parameter to transmit to the read.table function.
 #'
 #' @return  The loaded data frame.
 #'

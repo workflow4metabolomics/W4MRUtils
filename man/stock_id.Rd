@@ -7,16 +7,18 @@
 stock_id(data_matrix, metadata, metadata_type)
 }
 \arguments{
-\item{stock_id:}{stocks original identifiers and original order
-needs checked data regarding table match}
+\item{data_matrix}{data.frame containing data_matrix}
 
-\item{reproduce_id:}{reinjects original identifiers and original order into
-final tables}
+\item{metadata}{data.frame containing samplemetadata or variablemetadata}
+
+\item{metadata_type}{"sample" or "variable" depending on metadata content}
 }
 \description{
 stock_id
 Functions to stock identifiers before applying make.names() and
-to reinject it into final matrices
+to reinject it into final matrices.
+stock_id stocks original identifiers and original order
+needs checked data regarding table match.
 Note: it reproduces the original order of datasets' identifiers
 Function to be used at the very end, when exporting tables
 }

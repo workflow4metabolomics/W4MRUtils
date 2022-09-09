@@ -6,6 +6,9 @@
 \usage{
 parse_command_args_tf(...)
 }
+\arguments{
+\item{...}{Parameters to transmit to the parseCommandArgs function.}
+}
 \description{
 parse_command_args_tf
 Function to replace the default batch::parseCommandArgs to

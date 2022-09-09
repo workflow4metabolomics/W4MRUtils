@@ -43,6 +43,8 @@ NULL
 #' Function to call packages without printing all the verbose
 #' (only getting the essentials, like warning messages for example)
 #'
+#' @param ... Names of library to load
+#'
 #' @examples
 #' \dontrun{shy_lib("xcms","pcaMethods")}
 #'
@@ -58,11 +60,39 @@ shy_lib <- function(...) {
   )
 }
 
+#' @title Parse Command arguments
+#' @description parse_args
+#'  Replacement for the parseCommandArgs utility from batch.
+#'  Note that inputs like `script.R some-list c(1, 2, 3)` will result in
+#'  args$`some-list` to be the string "c(1, 2, 3)", and not a vector anymore
+#'  as this ability was permitted by dangerous behaviours from the
+#'  batch package (the usage of `eval` which MUST NEVER be used on user's
+#'  inputs).
+#' @return a named \code{list} object containing the input parameters in values
+#'    and the parameters names in names
+#' @examples
+#' parameters <- parse_args()
+#' print(parameters$`some-parameter`)
+#' @export
+parse_args <- function() {
+  args <- commandArgs()
+  start <- which(args == "--args")[1] + 1
+  if (is.na(start)) {
+    return(list())
+  }
+  seq_by2 <- seq(start, length(args), by = 2)
+  result <- as.list(args[seq_by2 + 1])
+  names(result) <- args[seq_by2]
+  return(result)
+}
+
 #' @title Parse Command Args True/False
 #'
 #' @description parse_command_args_tf
 #' Function to replace the default batch::parseCommandArgs to
 #' solve an issue with batch if arguments are logical TRUE/FALSE
+#'
+#' @param ... Parameters to transmit to the parseCommandArgs function.
 #'
 #' @examples
 #' \dontrun{
@@ -88,13 +118,15 @@ parse_command_args_tf <- function(...) {
 #'
 #' @description stock_id
 #' Functions to stock identifiers before applying make.names() and
-#' to reinject it into final matrices
+#' to reinject it into final matrices.
+#' stock_id stocks original identifiers and original order
+#' needs checked data regarding table match.
 #' Note: it reproduces the original order of datasets' identifiers
 #' Function to be used at the very end, when exporting tables
-#' @param stock_id: stocks original identifiers and original order
-#'  needs checked data regarding table match
-#' @param reproduce_id: reinjects original identifiers and original order into
-#'  final tables
+#'
+#' @param data_matrix data.frame containing data_matrix
+#' @param metadata data.frame containing samplemetadata or variablemetadata
+#' @param metadata_type "sample" or "variable" depending on metadata content
 #'
 #' @examples
 #' \dontrun{
@@ -140,11 +172,13 @@ stock_id <- function(data_matrix, metadata, metadata_type) {
 #' @title Reproduce ID
 #'
 #' @description reproduce_id
+#' reproduce_id reinjects original identifiers and original order into
+#'  final tables
 #'
-#' @param data_matrix: data.frame containing data_matrix
-#' @param metadata: data.frame containing samplemetadata or variablemetadata
-#' @param metadata_type: "sample" or "variable" depending on metadata content
-#' @param id_match: 'id_match' element produced by stock_id
+#' @param data_matrix data.frame containing data_matrix
+#' @param metadata data.frame containing samplemetadata or variablemetadata
+#' @param metadata_type "sample" or "variable" depending on metadata content
+#' @param id_match 'id_match' element produced by stock_id
 #'
 #' @examples
 #' \dontrun{
