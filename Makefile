@@ -1,9 +1,23 @@
-R=/home/lpavot/R-versions/R-4.1.2/bin/R
+
+# R=/home/lpavot/R-versions/R-4.1.2/bin/R
+R=R
 package=W4MRUtils
-
-
 version = $(shell grep -Po "Version: .*" ./DESCRIPTION |cut -d \  -f 2)
 use_kind = Imports
+PACKAGE_FILE_NAME = $(package)_$(version).tar.gz
+
+# TARGET = CRAN
+# TARGET = BIOC
+
+CHECK = $(R) -q -e "devtools::check(pkg = '$(shell pwd)')"
+ifeq ($(TARGET),CRAN)
+	CHECK = $(R) CMD check --as-cran $(PACKAGE_FILE_NAME)
+endif
+ifeq ($(TARGET),BIOC)
+	CHECK = $(R) CMD BiocCheck $(PACKAGE_FILE_NAME)
+endif
+
+
 
 
 help_string=\n \
@@ -69,15 +83,15 @@ build		:	clean doc quick_build
 quick_build	:
 	@echo "Building package..."
 	@$(R) CMD build "."
+	@echo "Built."
 
-check		: quick_build
+check: quick_build
 	@(	\
 		cp $(package)_$(version).tar.gz /tmp/ ;	\
 		cd /tmp/ ;	\
-		$(R) CMD check $(package)_$(version).tar.gz ;	\
-		$(R) CMD BiocCheck $(package)_$(version).tar.gz	\
-	)
-	@echo "Built."
+		$(CHECK) ;	\
+	) ;
+	@echo "Checked."
 
 clean		:
 	@-ls $(package)_$(version).tar.gz  2> /dev/null | xargs -I file echo "Deleting "file
