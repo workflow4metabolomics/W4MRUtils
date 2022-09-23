@@ -68,14 +68,29 @@ shy_lib <- function(...) {
 #'  as this ability was permitted by dangerous behaviours from the
 #'  batch package (the usage of `eval` which MUST NEVER be used on user's
 #'  inputs).
+#' @param args optional, provide arguments to parse.
+#'  This function will use 'commandArgs()' by default
+#' @param convert_booleans logical - tells the function to convert
+#'  values into logical if their value is "TRUE" or "FALSE".
+#' @param convert_numerics logical - tells the function to convert
+#'  values into numeric if possible.
 #' @return a named \code{list} object containing the input parameters in values
-#'    and the parameters names in names
+#'  and the parameters names in names
 #' @examples
 #' parameters <- parse_args()
 #' print(parameters$`some-parameter`)
 #' @export
-parse_args <- function() {
-  args <- commandArgs()
+parse_args <- function(
+  args = NULL,
+  convert_booleans = TRUE,
+  convert_numerics = TRUE
+) {
+  warning(
+    "Please, use the 'optparse' library instead of the 'parse_args' function."
+  )
+  if (is.null(args)) {
+    args <- commandArgs()
+  }
   start <- which(args == "--args")[1] + 1
   if (is.na(start)) {
     return(list())
@@ -83,36 +98,62 @@ parse_args <- function() {
   seq_by2 <- seq(start, length(args), by = 2)
   result <- as.list(args[seq_by2 + 1])
   names(result) <- args[seq_by2]
-  return(result)
+  converters <- c()
+  if (convert_booleans) {
+    converters <- c(
+      converters,
+      \(x) {
+        return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
+      }
+    )
+  }
+  if (convert_numerics) {
+    converters <- c(
+      converters,
+      \(x) {
+        return(if (is.na(y <- as.numeric(x))) x else y)
+      }
+    )
+  }
+  return(convert_parameters(result, converters))
 }
 
-#' @title Parse Command Args True/False
-#'
-#' @description parse_command_args_tf
-#' Function to replace the default batch::parseCommandArgs to
-#' solve an issue with batch if arguments are logical TRUE/FALSE
-#'
-#' @param ... Parameters to transmit to the parseCommandArgs function.
-#'
+#' @title Convert Parameters
+#' @description convert_parameters
+#'  Applies a list of converters to each values on a list.
+#'  If a value is modified during the conversion (successfull conversion)
+#'  then, no further convert will be applied to this value, so values are
+#'  only converted once.
+#' @param args a named list, which values will be converted.
+#' @param converters a vector of function. Each function will be applied to
+#'  each values with the exception of values already converted by a
+#'  previous converter.
+#' @return a named \code{list} object with values converted by converters.
 #' @examples
-#' \dontrun{
-#' #interpretation of arguments given in command line as an R list of objects
-#' args <- parse_command_args_tf(evaluate = FALSE)
+#' boolean_converter <- \(x) {
+#'   return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
 #' }
-#'
-#' @author M.Petera
-#'
+#' parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))
+#' print(parameters$`some-parameter`)
+#' ## "TRUE" has becomes TRUE.
 #' @export
-parse_command_args_tf <- function(...) {
-  args <- batch::parseCommandArgs(...)
-  for (key in names(args)) {
-    if (args[key] %in% c("TRUE", "FALSE")) {
-      args[key] <- as.logical(args[key])
+convert_parameters <- function(args, converters) {
+  suppressWarnings(
+    for (param in names(args)) {
+      for (converter in converters) {
+        old_value <- args[[param]]
+        args[[param]] <- converter(args[[param]])
+        if (args[[param]] != old_value) {
+          ## The value has been modified by the converter, and
+          ## we don't want values to be converted multiple times,
+          ## so we pass to the next value.
+          break
+        }
+      }
     }
-  }
+  )
   return(args)
 }
-
 
 #' @title Stock ID
 #'
