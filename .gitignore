@@ -7,3 +7,5 @@ W4MRUtils_*.tar.gz
 README.html
 
 inst/doc
+/lib/
+/coverage.html
