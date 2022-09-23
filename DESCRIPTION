@@ -1,16 +1,21 @@
 Package: W4MRUtils
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Utils List for W4M
+Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Lain", "Pavot", "", "lain.pavot@inrae.fr", role = c("aut", "cre"))
+Description: Provides a set of utility function to prevent the spread of
+    utilities script in W4M scripts, and centralize them in a package.
+    Some are meant to be replaced by real packages in a near future, like
+    the parse_args function: it is here only to prepare the ground for
+    more global changes in W4M scripts and tools.
+License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+Imports: 
+    methods
 Suggests: 
+    BiocCheck,
     covr,
     DT,
     knitr,
