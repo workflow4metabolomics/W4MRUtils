@@ -33,3 +33,6 @@ inputs).
 parameters <- parse_args()
 print(parameters$`some-parameter`)
 }
+\author{
+L.Pavot
+}

@@ -76,6 +76,7 @@ shy_lib <- function(...) {
 #'  values into numeric if possible.
 #' @return a named \code{list} object containing the input parameters in values
 #'  and the parameters names in names
+#' @author L.Pavot
 #' @examples
 #' parameters <- parse_args()
 #' print(parameters$`some-parameter`)
@@ -129,6 +130,7 @@ parse_args <- function(
 #'  each values with the exception of values already converted by a
 #'  previous converter.
 #' @return a named \code{list} object with values converted by converters.
+#' @author L.Pavot
 #' @examples
 #' boolean_converter <- \(x) {
 #'   return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
