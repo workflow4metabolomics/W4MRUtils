@@ -145,7 +145,7 @@ convert_parameters <- function(args, converters) {
       for (converter in converters) {
         old_value <- args[[param]]
         args[[param]] <- converter(args[[param]])
-        if (args[[param]] != old_value) {
+        if (!identical(args[[param]], old_value)) {
           ## The value has been modified by the converter, and
           ## we don't want values to be converted multiple times,
           ## so we pass to the next value.
