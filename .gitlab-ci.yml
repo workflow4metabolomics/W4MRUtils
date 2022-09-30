@@ -1,15 +1,33 @@
 image: rocker/tidyverse
 
+variables:
+  cran_url: https://cran.irsn.fr
+  set_cran: export CRAN=${cran_url};
+  set_rcran: options(repos='$cran_url');
+
 stages:
   - build
+  - check
   - test
   - deploy
 
 building:
   stage: build
   script:
-    - R -e "remotes::install_deps(dependencies = TRUE)"
-    - R -e 'devtools::check()'
+    - R -q -e "${set_rcran}remotes::install_deps(dependencies = TRUE)"
+  tags:
+    - docker-sauron
+
+
+checking:
+  stage: check
+  allow_failure: true
+  script:
+    - apt-get update && apt-get install -y qpdf
+    - R -q -e "${set_rcran}install.packages(c('DT', 'covr', 'qpdf'))"
+    - R -q -e "${set_rcran}devtools::check('$CI_PROJECT_DIR')"
+  tags:
+    - docker-sauron
 
 # To have the coverage percentage appear as a gitlab badge follow these
 # instructions:
@@ -18,30 +36,36 @@ building:
 # Coverage: \d+\.\d+
 
 testing:
-    stage: test
-    allow_failure: true
-    when: on_success
-    only:
-        - master
-    script:
-        - Rscript -e 'install.packages("DT")'
-        - Rscript -e 'covr::gitlab(quiet = FALSE)'
-    artifacts:
-        paths:
-            - public
+  stage: test
+  allow_failure: true
+  when: on_success
+  only:
+    - dev
+    - main
+  script:
+    - R -q -e "${set_rcran}install.packages(c('DT', 'covr'))"
+    - R -q -e "covr::gitlab(quiet = FALSE)"
+  artifacts:
+    paths:
+      - public
+  tags:
+    - docker-sauron
+  coverage: '/ Coverage: \d+\.\d+/'
 
 # To produce a code coverage report as a GitLab page see
 # https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/
 
 pages:
-    stage: deploy
-    dependencies:
-        - testing
-    script:
-        - ls
-    artifacts:
-        paths:
-            - public
-        expire_in: 30 days
-    only:
-        - master
+  stage: deploy
+  dependencies:
+    - testing
+  script:
+    - ls
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - main
+  tags:
+    - docker-sauron
