@@ -22,3 +22,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Collate:
+    dataframe_helpers.R
+    miniTools.R
+    RcheckLibrary.R
