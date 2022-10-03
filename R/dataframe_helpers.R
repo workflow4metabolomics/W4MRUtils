@@ -29,7 +29,7 @@ NULL
 #'
 #' @export
 df_is <- function(df, type) {
-  return(all(vapply(df, function(v) methods::is(v, type), FUN.VALUE = FALSE)))
+  return(all(lapply(df, class) == type))
 }
 
 #' @title Convert data frame to numeric.
