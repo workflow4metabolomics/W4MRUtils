@@ -103,7 +103,7 @@ parse_args <- function(
   if (convert_booleans) {
     converters <- c(
       converters,
-      \(x) {
+      function(x) {
         return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
       }
     )
@@ -111,7 +111,7 @@ parse_args <- function(
   if (convert_numerics) {
     converters <- c(
       converters,
-      \(x) {
+      function(x) {
         return(if (is.na(y <- as.numeric(x))) x else y)
       }
     )
@@ -132,7 +132,7 @@ parse_args <- function(
 #' @return a named \code{list} object with values converted by converters.
 #' @author L.Pavot
 #' @examples
-#' boolean_converter <- \(x) {
+#' boolean_converter <- function(x) {
 #'   return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
 #' }
 #' parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))
