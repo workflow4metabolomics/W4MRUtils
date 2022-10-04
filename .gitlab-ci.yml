@@ -6,18 +6,17 @@ variables:
   set_rcran: options(repos='$cran_url');
 
 stages:
+  - deploy
   - build
   - check
   - test
-  - deploy
 
-building:
+building R package:
   stage: build
   script:
     - R -q -e "${set_rcran}remotes::install_deps(dependencies = TRUE)"
   tags:
     - docker-sauron
-
 
 checking:
   stage: check
@@ -67,5 +66,13 @@ pages:
     expire_in: 30 days
   only:
     - main
+  tags:
+    - docker-sauron
+
+building conda recipe:
+  image: condatest/linux-64-python-3.7
+  stage: deploy
+  script:
+    - R -q -e "${set_rcran}remotes::install_deps(dependencies = TRUE)"
   tags:
     - docker-sauron
