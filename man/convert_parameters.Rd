@@ -24,7 +24,7 @@ then, no further convert will be applied to this value, so values are
 only converted once.
 }
 \examples{
-boolean_converter <- \(x) {
+boolean_converter <- function(x) {
   return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
 }
 parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))

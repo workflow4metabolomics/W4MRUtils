@@ -93,6 +93,10 @@ df_force_numeric <- function(df, cols = NULL) {
 #'
 #' @export
 df_read_table <- function(file, force_numeric = FALSE, ...) {
+  warning(paste(
+    "Please, use read.table instead of df_read_table.",
+    "This function will be deleted in further version of W4MRUtils."
+  ))
   df <- read.table(file, ...)
   if (is.logical(force_numeric) && force_numeric) {
     df <- df_force_numeric(df)

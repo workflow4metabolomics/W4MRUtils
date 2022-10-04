@@ -68,14 +68,18 @@ test_that("Testing df_read_table", {
   path <- tempfile()
   file.create(path)
   write.table(original_df, file = path)
-  loaded_df <- df_read_table(path, force_numeric = TRUE)
+  suppressWarnings({
+    loaded_df <- df_read_table(path, force_numeric = TRUE)
+  })
   testthat::expect_identical(loaded_df, original_df)
 
   original_df <- data.frame(a = c(6, 7, 8), b = c(4, 5, 6))
   path <- tempfile()
   file.create(path)
   write.table(original_df, file = path)
-  loaded_df <- df_read_table(path, force_numeric = FALSE)
+  suppressWarnings({
+    loaded_df <- df_read_table(path, force_numeric = FALSE)
+  })
   testthat::expect_false(identical(loaded_df, original_df))
 
   ## FIXME: This tests should work
@@ -94,21 +98,25 @@ test_that("Testing df_read_table", {
     file = path,
     row.names = FALSE
   )
-  loaded_df <- df_read_table(
-    path,
-    colClasses = c(a = "character", b = "numeric"),
-    header = TRUE
-  )
+  suppressWarnings({
+    loaded_df <- df_read_table(
+      path,
+      colClasses = c(a = "character", b = "numeric"),
+      header = TRUE
+    )
+  })
   testthat::expect_identical(loaded_df, original_df)
 
   original_df <- data.frame(a = c("7", "8", "9"), b = c("4", "5", "6"))
   path <- tempfile()
   file.create(path)
   write.table(original_df, file = path, row.names = FALSE)
-  loaded_df <- df_read_table(
-    path,
-    colClasses = c(a = "character", b = "character"),
-    header = TRUE
-  )
+  suppressWarnings({
+    loaded_df <- df_read_table(
+      path,
+      colClasses = c(a = "character", b = "character"),
+      header = TRUE
+    )
+  })
   testthat::expect_identical(loaded_df, original_df)
 })

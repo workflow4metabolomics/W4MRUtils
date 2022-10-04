@@ -6,10 +6,10 @@ variables:
   set_rcran: options(repos='$cran_url');
 
 stages:
-  - deploy
   - build
   - check
   - test
+  - deploy
 
 building R package:
   stage: build
@@ -71,8 +71,11 @@ pages:
 
 building conda recipe:
   image: condatest/linux-64-python-3.7
-  stage: deploy
+  only:
+    - dev
+    - main
+  stage: build
   script:
-    - R -q -e "${set_rcran}remotes::install_deps(dependencies = TRUE)"
+    - /opt/conda/bin/conda-build -c conda-forge $CI_PROJECT_DIR/meta.yaml
   tags:
     - docker-sauron
