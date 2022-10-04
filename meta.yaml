@@ -1,17 +1,20 @@
 {% set version = "0.0.1" %}
-# {% set git_server = "github.com" %}
-{% set git_server = "services.pfem.clermont.inrae.fr/gitlab" %}
-{% set git_group = "R-team" %}
-{% set git_repo = "W4MRUtils" %}
+{% if environ.get("CI_TOKEN") %}
+{% set git_server = "gitlab-ci-token:%s@services.pfem.clermont.inrae.fr/gitlab" % environ.get("CI_TOKEN") %}
+{% else %}
+{% set git_server = "github.com" %}
+{% endif %}
+{% set git_path = "R-team" %}
+{% set git_repo_name = "W4MRUtils" %}
 
 package:
   name: r-w4mrutils
   version: "{{ version }}"
 
 source:
-  git_url: https://{{ git_server }}/{{ git_group }}/{{ git_repo }}.git
+  git_url: https://{{ git_server }}/{{ git_path }}/{{ git_repo_name }}.git
   git_rev: v{{ version }}
-  git_depth: 1
+  git_depth: -1
 
 build:
   noarch: generic
@@ -20,10 +23,10 @@ build:
   script: R CMD INSTALL --build .
 
 requirements:
+  build:
+    - r-base {{ R_version }}
   run:
-    - r-base
-  host:
-    - r-base
+    - r-base {{ R_version }}
 
 test:
   commands:

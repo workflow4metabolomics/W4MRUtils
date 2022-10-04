@@ -69,7 +69,7 @@ pages:
   tags:
     - docker-sauron
 
-building conda recipe R 4.2:
+building conda recipe:
   allow_failure: true
   image: condatest/linux-64-python-3.7
   only:
@@ -77,30 +77,6 @@ building conda recipe R 4.2:
     - main
   stage: build
   script:
-    - /opt/conda/bin/conda-build --R 4.2 --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
-  tags:
-    - docker-sauron
-
-building conda recipe R 4.1:
-  allow_failure: true
-  image: condatest/linux-64-python-3.7
-  only:
-    - dev
-    - main
-  stage: build
-  script:
-    - /opt/conda/bin/conda-build --R 4.1 --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
-  tags:
-    - docker-sauron
-
-building conda recipe R 4.0:
-  allow_failure: true
-  image: condatest/linux-64-python-3.7
-  only:
-    - dev
-    - main
-  stage: build
-  script:
-    - /opt/conda/bin/conda-build --R 4.0 --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
+    - /opt/conda/bin/conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
   tags:
     - docker-sauron
