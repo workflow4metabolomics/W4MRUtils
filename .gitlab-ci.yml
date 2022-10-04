@@ -76,6 +76,6 @@ building conda recipe:
     - main
   stage: build
   script:
-    - /opt/conda/bin/conda-build -c conda-forge $CI_PROJECT_DIR/meta.yaml
+    - /opt/conda/bin/conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
   tags:
     - docker-sauron

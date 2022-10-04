@@ -14,7 +14,10 @@ source:
   git_depth: 1
 
 build:
-  script: R CMD INSTALL .
+  noarch: generic
+  merge_build_host: true
+  number: 0
+  script: R CMD INSTALL --build .
 
 requirements:
   run:
@@ -39,3 +42,8 @@ about:
   dev_url: https://github.com/workflow4metabolomics/W4MRUtils
   doc_url: https://github.com/workflow4metabolomics/W4MRUtils
   doc_source_url: https://github.com/workflow4metabolomics/W4MRUtils/blob/v{{ version }}/README.md
+
+extra:
+  recipe-maintainers:
+    - Lain-inrae
+    - conda-forge/r
