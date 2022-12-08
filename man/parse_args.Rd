@@ -30,7 +30,7 @@ batch package (the usage of \code{eval} which MUST NEVER be used on user's
 inputs).
 
 To get a list of numeric from users, instead of using the \code{c(1, 2)} trick,
-please, use regular list:
+please, use regular lists parsing:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{> args$`some-list`
 [1] "1,2"

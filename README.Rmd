@@ -74,12 +74,12 @@ R script content:
 
 ```{r example parameters}
 param_printer <- function(name, args) {
-  sprintf(
+  cat(sprintf(
     "%s[%s] %s",
     name,
     class(args[[name]])[1],
     paste(args[[name]], collapse = " ")
-  )
+  ))
 }
 args <- W4MRUtils::parse_args(commandArgs())
 param_printer("a-integer", args)

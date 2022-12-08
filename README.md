@@ -54,27 +54,27 @@ R script content:
 
 ``` r
 param_printer <- function(name, args) {
-  sprintf(
+  cat(sprintf(
     "%s[%s] %s",
     name,
     class(args[[name]])[1],
     paste(args[[name]], collapse = " ")
-  )
+  ))
 }
 args <- W4MRUtils::parse_args(commandArgs())
 #> Warning in W4MRUtils::parse_args(commandArgs()): Please, use the 'optparse'
 #> library instead of the 'parse_args' function.
 param_printer("a-integer", args)
-#> [1] "a-integer[numeric] 42"
+#> a-integer[numeric] 42
 param_printer("a-float", args)
-#> [1] "a-float[numeric] 3.14"
+#> a-float[numeric] 3.14
 param_printer("a-boolean", args)
-#> [1] "a-boolean[logical] FALSE"
+#> a-boolean[logical] FALSE
 param_printer("a-list", args)
-#> [1] "a-list[character] 1,2,3"
+#> a-list[character] 1,2,3
 args$`a-list` <- as.numeric(strsplit(args$`a-list`, ",")[[1]])
 param_printer("a-list", args)
-#> [1] "a-list[numeric] 1 2 3"
+#> a-list[numeric] 1 2 3
 ```
 
 ## XML Wrapper
