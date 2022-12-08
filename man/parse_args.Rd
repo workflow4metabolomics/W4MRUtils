@@ -28,6 +28,16 @@ args$\code{some-list} to be the string "c(1, 2, 3)", and not a vector anymore
 as this ability was permitted by dangerous behaviours from the
 batch package (the usage of \code{eval} which MUST NEVER be used on user's
 inputs).
+
+To get a list of numeric from users, instead of using the \code{c(1, 2)} trick,
+please, use regular list:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{> args$`some-list`
+[1] "1,2"
+args$`some-list` <- as.numeric(strsplit(args$`some-list`, ",")[[1]])
+> args$`some-list`
+[1] 1 2
+}\if{html}{\out{</div>}}
 }
 \examples{
 parameters <- parse_args()
