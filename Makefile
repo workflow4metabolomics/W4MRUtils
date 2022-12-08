@@ -59,9 +59,11 @@ help		:
 	@printf -- "$(help_string)"
 
 
-new_doc		:
-	@$(R) -q -e 'devtools::use_vignette("$(name)")'
+new_vignette		:
+	@$(R) -q -e 'usethis::use_vignette("$(name)")'
 
+render_vignettes:
+	@$(R) -q -e 'devtools::build_rmd(file.path("vignettes", list.files("vignettes")))'
 
 # one of bioc, cran, github, svn, local, url
 use_%_package:
