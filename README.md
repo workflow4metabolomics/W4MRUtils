@@ -1,57 +1,81 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # W4MRUtils
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The goal of W4MRUtils is to …
+W4MRUtils is a R packages provided by W4M to ease galaxy tools writing.
+It contains some utility functions
 
 ## Installation
 
 You can install the development version of W4MRUtils like so:
 
+``` bash
+make install
+```
+
+or
+
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+rmarkdown::render("README.Rmd")
+devtools::document(".")
+roxygen2::roxygenize(".")
+devtools::test(".")
+devtools::install(".", dependencies = FALSE, repos = NULL, type = "source")
+```
+
+## Uninstallation
+
+You can install the development version of W4MRUtils like so:
+
+``` bash
+make remove_package
+```
+
+or
+
+``` r
+remove.packages("W4MRUtils")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+### parsing parameters
 
-``` r
-library(W4MRUtils)
-## basic example code
+R script command line:
+
+``` sh
+Rscript my_script.R --a-integer 42 --a-float 3.14 --a-boolean FALSE --a-list 1,2,3
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+R script content:
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+param_printer <- function(name, args) {
+  sprintf(
+    "%s[%s] %s",
+    name,
+    class(args[[name]])[1],
+    paste(args[[name]], collapse = " ")
+  )
+}
+args <- W4MRUtils::parse_args(commandArgs())
+#> Warning in W4MRUtils::parse_args(commandArgs()): Please, use the 'optparse'
+#> library instead of the 'parse_args' function.
+param_printer("a-integer", args)
+#> [1] "a-integer[numeric] 42"
+param_printer("a-float", args)
+#> [1] "a-float[numeric] 3.14"
+param_printer("a-boolean", args)
+#> [1] "a-boolean[logical] FALSE"
+param_printer("a-list", args)
+#> [1] "a-list[character] 1,2,3"
+args$`a-list` <- as.numeric(strsplit(args$`a-list`, ",")[[1]])
+param_printer("a-list", args)
+#> [1] "a-list[numeric] 1 2 3"
 ```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
 
 ## XML Wrapper
 
