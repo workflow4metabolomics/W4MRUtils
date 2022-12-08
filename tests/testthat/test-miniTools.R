@@ -33,6 +33,30 @@ test_that("Testing parse_args", {
 })
 
 test_that("Testing stock_id", {
+  data_matrix <- data.frame(id = 1:9, a = 2:10, b = 3:11)
+  var_meta <- data.frame(x = 1:9, y = 2:10, z = 3:11)
+  testthat::expect_identical(
+    stock_id(data_matrix = data_matrix, var_meta, "variable"),
+    list(
+      id.match = data.frame(
+        order.ori = 1:9,
+        x = 1:9,
+        id.new = make.names(1:9),
+        id = 1:9,
+        id.new.DM = make.names(1:9)
+      ),
+      dataMatrix = data.frame(
+        id = make.names(1:9),
+        a = 2:10,
+        b = 3:11
+      ),
+      Metadata = data.frame(
+        x = make.names(1:9),
+        y = 2:10,
+        z = 3:11
+      )
+    )
+  )
 })
 
 test_that("Testing reproduce_id", {
