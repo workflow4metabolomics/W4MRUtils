@@ -68,6 +68,18 @@ shy_lib <- function(...) {
 #'  as this ability was permitted by dangerous behaviours from the
 #'  batch package (the usage of `eval` which MUST NEVER be used on user's
 #'  inputs).
+#'
+#'  To get a list of numeric from users, instead of using the `c(1, 2)` trick,
+#'  please, use regular lists parsing:
+#'
+#'  ```
+#'  > args$`some-list`
+#'  [1] "1,2"
+#'  args$`some-list` <- as.numeric(strsplit(args$`some-list`, ",")[[1]])
+#'  > args$`some-list`
+#'  [1] 1 2
+#'  ```
+#'
 #' @param args optional, provide arguments to parse.
 #'  This function will use 'commandArgs()' by default
 #' @param convert_booleans logical - tells the function to convert
