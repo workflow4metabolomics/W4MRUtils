@@ -199,16 +199,16 @@ stock_id <- function(data_matrix, metadata, metadata_type) {
   # global stock - - - - - - - - - - - - - - - -
   id_new <- data.frame(
     order.ori = seq_along(metadata[, 1]), metadata[, 1],
-    id_new = make.names(metadata[, 1]), id_ori,
-    id_new.DM = make.names(id_ori), stringsAsFactors = FALSE
+    id.new = make.names(metadata[, 1]), id_ori,
+    id.new.DM = make.names(id_ori), stringsAsFactors = FALSE
   )
   colnames(id_new)[c(2, 4)] <- c(colnames(metadata)[1], cname)
   # metadata transfo + returning data - - - - -
   metadata[, 1] <- make.names(metadata[, 1])
   return(list(
-    id_match = id_new,
-    data_matrix = data_matrix,
-    metadata = metadata
+    id.match = id_new,
+    dataMatrix = data_matrix,
+    Metadata = metadata
   ))
 }
 
