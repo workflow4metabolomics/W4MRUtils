@@ -71,12 +71,12 @@ pages:
 
 building conda recipe:
   allow_failure: true
-  image: condatest/linux-64-python-3.7
+  image: quay.io/condaforge/linux-anvil-cos7-x86_64
   only:
     - dev
     - main
   stage: build
   script:
-    - /opt/conda/bin/conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
+    - conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
   tags:
     - docker-sauron
