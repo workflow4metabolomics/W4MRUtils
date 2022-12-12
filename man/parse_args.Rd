@@ -42,6 +42,7 @@ args$`some-list` <- as.numeric(strsplit(args$`some-list`, ",")[[1]])
 \examples{
 parameters <- parse_args()
 print(parameters$`some-parameter`)
+
 }
 \author{
 L.Pavot

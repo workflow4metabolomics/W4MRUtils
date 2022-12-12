@@ -36,6 +36,11 @@ It contains some utility functions
 ## Installation
 
 You can install the development version of W4MRUtils like so:
+```bash
+git clone https://github.com/workflow4metabolomics/W4MRUtils
+cd W4MRUtils
+```
+then
 
 ```{bash install with make, eval=FALSE}
 make install
@@ -62,12 +67,12 @@ remove.packages("W4MRUtils")
 ```
 
 
-## Example
+## Usages
 
 ### parsing parameters
 
 R script command line:
-```{sh how to run scritp, eval=FALSE}
+```{bash how to run scritp, eval=FALSE}
 Rscript my_script.R --a-integer 42 --a-float 3.14 --a-boolean FALSE --a-list 1,2,3
 ```
 R script content:
@@ -89,7 +94,6 @@ param_printer("a-list", args)
 args$`a-list` <- as.numeric(strsplit(args$`a-list`, ",")[[1]])
 param_printer("a-list", args)
 ```
-
 
 ## XML Wrapper
 

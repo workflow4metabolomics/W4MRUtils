@@ -54,6 +54,11 @@ mail: $(USER)@inrae.fr \n \
 version: $(version) \n \
 creation date: $(shell date --rfc-email)\n \
 
+render_man='\
+lapply( \
+  file.path("man", list.files("man", pattern="*.Rd")), \
+  \(x)tools::Rd2HTML(x, out=sprintf("%s.html", substr(x, 0, nchar(x)-3))) \
+)'
 
 help		:
 	@printf -- "$(help_string)"
@@ -63,7 +68,13 @@ new_vignette		:
 	@$(R) -q -e 'usethis::use_vignette("$(name)")'
 
 render_vignettes:
-	@$(R) -q -e 'devtools::build_rmd(file.path("vignettes", list.files("vignettes")))'
+	@$(R) -q -e 'devtools::build_rmd(file.path("vignettes", list.files("vignettes", pattern="*.Rd")))'
+
+render_doc: remove_rendered_doc
+	@$(R) -q -e ${render_man} >/dev/null
+
+remove_rendered_doc:
+	@- rm man/*.html
 
 # one of bioc, cran, github, svn, local, url
 use_%_package:

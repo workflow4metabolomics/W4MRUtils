@@ -15,13 +15,18 @@ reproduce_id(data_matrix, metadata, metadata_type, id_match)
 
 \item{id_match}{'id_match' element produced by stock_id}
 }
+\value{
+a named \code{list} with two elements:
+data_matrix: the processed data matrix with its original names and order
+metadata: the processed metadata, with its original names and order.
+}
 \description{
 reproduce_id
-reproduce_id reinjects original identifiers and original order into
+reproduce_id() reinjects original identifiers and original order into
 final tables
 }
 \examples{
-\dontrun{
+\donttest{
 B <- reproduce_id(datamatrix, sample_metadata, "sample", A)
 datamatrix <- B$data_matrix
 sample_metadata <- B$metadata

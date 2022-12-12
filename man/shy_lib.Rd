@@ -7,7 +7,10 @@
 shy_lib(...)
 }
 \arguments{
-\item{...}{Names of library to load}
+\item{...}{Names of libraries to load}
+}
+\value{
+a \code{list} of attached packages
 }
 \description{
 shy_lib
@@ -15,7 +18,7 @@ Function to call packages without printing all the verbose
 (only getting the essentials, like warning messages for example)
 }
 \examples{
-\dontrun{shy_lib("xcms","pcaMethods")}
+\donttest{shy_lib("xcms","pcaMethods")}
 
 }
 \author{

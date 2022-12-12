@@ -1,18 +1,13 @@
 {% set version = "0.0.1" %}
 
+{% set git_repo_name = "W4MRUtils" %}
+{% set git_proto = "https" %}
+
 {% if environ.get("CI_TOKEN") %}
 {%   set git_auth = "gitlab-ci-token:%s@" % environ.get("CI_TOKEN") %}
 {%   set git_server = "services.pfem.clermont.inrae.fr/gitlab" %}
 {%   set git_path = "R-team" %}
-{% else %}
-{%   set git_auth = "" %}
-{%   set git_server = "github.com" %}
-{%   set git_path = "workflow4metabolomics" %}
-{% endif %}
-
-{% set git_repo_name = "W4MRUtils" %}
-{% set git_proto = "https" %}
-
+{%   set url = "git_url:" %}
 {%
 set git_url = "%s://%s%s/%s/%s.git" % (
   git_proto,
@@ -22,13 +17,26 @@ set git_url = "%s://%s%s/%s/%s.git" % (
   git_repo_name
 )
 %}
+{% else %}
+{%   set git_auth = "" %}
+{%   set git_server = "github.com" %}
+{%   set git_path = "workflow4metabolomics" %}
+{%   set url = "url:" %}
+{%   set git_url = "https://github.com/%s/%s/archive/refs/tags/v%s.tar.gz" % (
+  git_path,
+  git_repo_name,
+  version
+)
+%}
+{% endif %}
+
 
 package:
   name: r-w4mrutils
   version: "{{ version }}"
 
 source:
-  git_url: "{{ git_url }}"
+  {{ url }} "{{ git_url }}"
   git_rev: v{{ version }}
   git_depth: -1
 

@@ -13,6 +13,9 @@ match3(data_matrix, sample_metadata, variable_metadata)
 
 \item{variable_metadata}{data.frame containing variable_metadata}
 }
+\value{
+\code{character} vector a list of errors encountered
+}
 \description{
 match3
 To check if the 3 standard tables match regarding identifiers

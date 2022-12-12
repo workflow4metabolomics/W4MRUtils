@@ -21,9 +21,11 @@
 #' l'utiliser.
 #'
 #' @examples
-#' \dontrun{source_local("filter_script.R","RcheckLibrary.R")}
+#' \donttest{
+#'    source_local("filter_script.R","RcheckLibrary.R")
+#'  }
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   source_local <- function(...) {
 #'     argv <- commandArgs(trailingOnly = FALSE)
 #'     base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
@@ -43,10 +45,11 @@ NULL
 #' Function to call packages without printing all the verbose
 #' (only getting the essentials, like warning messages for example)
 #'
-#' @param ... Names of library to load
+#' @param ... Name of libraries to load
+#' @return a \code{list} of attached packages
 #'
 #' @examples
-#' \dontrun{shy_lib("xcms","pcaMethods")}
+#' \donttest{shy_lib("xcms","pcaMethods")}
 #'
 #' @author M.Petera
 #'
@@ -60,7 +63,9 @@ shy_lib <- function(...) {
   )
 }
 
+#'
 #' @title Parse Command arguments
+#'
 #' @description parse_args
 #'  Replacement for the parseCommandArgs utility from batch.
 #'  Note that inputs like `script.R some-list c(1, 2, 3)` will result in
@@ -81,17 +86,19 @@ shy_lib <- function(...) {
 #'  ```
 #'
 #' @param args optional, provide arguments to parse.
-#'  This function will use 'commandArgs()' by default
+#'  This function will use 'commandArgs()' if args is not provided
 #' @param convert_booleans logical - tells the function to convert
 #'  values into logical if their value is "TRUE" or "FALSE".
 #' @param convert_numerics logical - tells the function to convert
 #'  values into numeric if possible.
 #' @return a named \code{list} object containing the input parameters in values
 #'  and the parameters names in names
+#'
 #' @author L.Pavot
 #' @examples
 #' parameters <- parse_args()
 #' print(parameters$`some-parameter`)
+#'
 #' @export
 parse_args <- function(
   args = NULL,
@@ -131,17 +138,21 @@ parse_args <- function(
   return(convert_parameters(result, converters))
 }
 
+#'
 #' @title Convert Parameters
+#'
 #' @description convert_parameters
 #'  Applies a list of converters to each values on a list.
 #'  If a value is modified during the conversion (successfull conversion)
 #'  then, no further convert will be applied to this value, so values are
 #'  only converted once.
+#'
 #' @param args a named list, which values will be converted.
 #' @param converters a vector of function. Each function will be applied to
 #'  each values with the exception of values already converted by a
 #'  previous converter.
 #' @return a named \code{list} object with values converted by converters.
+#'
 #' @author L.Pavot
 #' @examples
 #' boolean_converter <- function(x) {
@@ -150,6 +161,7 @@ parse_args <- function(
 #' parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))
 #' print(parameters$`some-parameter`)
 #' ## "TRUE" has becomes TRUE.
+#'
 #' @export
 convert_parameters <- function(args, converters) {
   suppressWarnings(
@@ -176,15 +188,20 @@ convert_parameters <- function(args, converters) {
 #' to reinject it into final matrices.
 #' stock_id stocks original identifiers and original order
 #' needs checked data regarding table match.
-#' Note: it reproduces the original order of datasets' identifiers
-#' Function to be used at the very end, when exporting tables
 #'
-#' @param data_matrix data.frame containing data_matrix
-#' @param metadata data.frame containing samplemetadata or variablemetadata
+#' @param data_matrix a \code{data.frame} containing the data_matrix
+#' @param metadata a \code{data.frame} containing samplemetadata or
+#'  variablemetadata
 #' @param metadata_type "sample" or "variable" depending on metadata content
+#' @return a names \code{list} with three elements:
+#'  - id.match a \code{data.frame} that contains original order of ids, names ;
+#'  - dataMatrix the modified data matrix with names sanitized
+#'  - Metadata the modified metadata matrix with names sanitized
+#' This object can be used in reproduce_id() to replace sanitized names in data
+#' matrix by original ones, in the right order.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' A <- stock_id(myDM, mysM, "sample")
 #' myDM <- A$data_matrix
 #' mysM <- A$metadata
@@ -227,16 +244,19 @@ stock_id <- function(data_matrix, metadata, metadata_type) {
 #' @title Reproduce ID
 #'
 #' @description reproduce_id
-#' reproduce_id reinjects original identifiers and original order into
+#' reproduce_id() reinjects original identifiers and original order into
 #'  final tables
 #'
 #' @param data_matrix data.frame containing data_matrix
 #' @param metadata data.frame containing samplemetadata or variablemetadata
 #' @param metadata_type "sample" or "variable" depending on metadata content
 #' @param id_match 'id_match' element produced by stock_id
+#' @return a named \code{list} with two elements:
+#'  data_matrix: the processed data matrix with its original names and order
+#'  metadata: the processed metadata, with its original names and order.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' B <- reproduce_id(datamatrix, sample_metadata, "sample", A)
 #' datamatrix <- B$data_matrix
 #' sample_metadata <- B$metadata

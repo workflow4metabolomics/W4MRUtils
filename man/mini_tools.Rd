@@ -21,8 +21,10 @@ script, il faut donc la copier-coller dans le wrapper R pour pouvoir
 l'utiliser.
 }
 \examples{
-\dontrun{source_local("filter_script.R","RcheckLibrary.R")}
-\dontrun{
+\donttest{
+   source_local("filter_script.R","RcheckLibrary.R")
+ }
+\donttest{
   source_local <- function(...) {
     argv <- commandArgs(trailingOnly = FALSE)
     base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))

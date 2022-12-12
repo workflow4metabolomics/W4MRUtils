@@ -30,6 +30,7 @@ boolean_converter <- function(x) {
 parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))
 print(parameters$`some-parameter`)
 ## "TRUE" has becomes TRUE.
+
 }
 \author{
 L.Pavot

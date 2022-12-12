@@ -14,9 +14,10 @@ NULL
 #' @title Check Errors
 #'
 #' @description check_err
-#' Generic function to return an error if problems have been encountered
+#' Generic function stop in error if problems have been encountered
 #'
 #' @param err_stock vector of results returned by check functions
+#' @return \code{NULL}
 #'
 #' @author M.Petera
 #' @export
@@ -35,11 +36,13 @@ check_err <- function(err_stock) {
 #' @param data_matrix data.frame containing data_matrix
 #' @param metadata data.frame containing sample_metadata or variable_metadata
 #' @param metadata_type "sample" or "variable" depending on metadata content
+#' @return \code{character} vector a list of errors encountered
 #' @author M.Petera
 #' @export
 match2 <- function(data_matrix, metadata, metadata_type) {
 
-  err_stock <- NULL #' error vector
+  # error vector
+  err_stock <- NULL
 
   id2 <- metadata[, 1]
   if (metadata_type == "sample") {
@@ -121,6 +124,7 @@ match2 <- function(data_matrix, metadata, metadata_type) {
 #' @param data_matrix data.frame containing data_matrix
 #' @param sample_metadata data.frame containing sample_metadata
 #' @param variable_metadata data.frame containing variable_metadata
+#' @return \code{character} vector a list of errors encountered
 #'
 #' @author M.Petera
 #' @export

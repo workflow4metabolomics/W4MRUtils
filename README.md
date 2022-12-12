@@ -13,6 +13,13 @@ It contains some utility functions
 You can install the development version of W4MRUtils like so:
 
 ``` bash
+git clone https://github.com/workflow4metabolomics/W4MRUtils
+cd W4MRUtils
+```
+
+then
+
+``` bash
 make install
 ```
 
@@ -40,13 +47,13 @@ or
 remove.packages("W4MRUtils")
 ```
 
-## Example
+## Usages
 
 ### parsing parameters
 
 R script command line:
 
-``` sh
+``` bash
 Rscript my_script.R --a-integer 42 --a-float 3.14 --a-boolean FALSE --a-list 1,2,3
 ```
 

@@ -1,12 +1,13 @@
 Package: W4MRUtils
-Title: Utils List for W4M
+Title: Utils List for W4M - Workflow For Metabolomics
 Version: 0.0.1
 Authors@R: 
     person("Lain", "Pavot", "", "lain.pavot@inrae.fr", role = c("aut", "cre"))
 Description: Provides a set of utility function to prevent the spread of
-    utilities script in W4M scripts, and centralize them in a package.
+    utilities script in W4M (Workflow For Metabolomics) scripts, and centralize
+    them in a single package.
     Some are meant to be replaced by real packages in a near future, like
-    the parse_args function: it is here only to prepare the ground for
+    the parse_args() function: it is here only to prepare the ground for
     more global changes in W4M scripts and tools.
 License: AGPL (>= 3)
 Encoding: UTF-8

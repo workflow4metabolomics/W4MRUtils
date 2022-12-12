@@ -16,7 +16,7 @@ want to convert, or ton integer vector containing the indices of the
 columns. Can be used to force conversion of non integer columns.}
 }
 \value{
-The converted data frame.
+The converted \code{data.frame}.
 }
 \description{
 df_force_numeric

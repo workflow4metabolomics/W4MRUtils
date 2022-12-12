@@ -9,9 +9,12 @@ check_err(err_stock)
 \arguments{
 \item{err_stock}{vector of results returned by check functions}
 }
+\value{
+\code{NULL}
+}
 \description{
 check_err
-Generic function to return an error if problems have been encountered
+Generic function stop in error if problems have been encountered
 }
 \author{
 M.Petera

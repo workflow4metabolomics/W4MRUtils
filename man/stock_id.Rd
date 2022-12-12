@@ -13,17 +13,25 @@ stock_id(data_matrix, metadata, metadata_type)
 
 \item{metadata_type}{"sample" or "variable" depending on metadata content}
 }
+\value{
+a names \code{list} with three elements:
+\itemize{
+\item id.match a \code{data.frame} that contains original order of ids, names ;
+\item dataMatrix the modified data matrix with names sanitized
+\item Metadata the modified metadata matrix with names sanitized
+This object can be used in reproduce_id() to replace sanitized names in data
+matrix by original ones, in the right order.
+}
+}
 \description{
 stock_id
 Functions to stock identifiers before applying make.names() and
 to reinject it into final matrices.
 stock_id stocks original identifiers and original order
 needs checked data regarding table match.
-Note: it reproduces the original order of datasets' identifiers
-Function to be used at the very end, when exporting tables
 }
 \examples{
-\dontrun{
+\donttest{
 A <- stock_id(myDM, mysM, "sample")
 myDM <- A$data_matrix
 mysM <- A$metadata

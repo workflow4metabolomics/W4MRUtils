@@ -44,7 +44,7 @@ df_is <- function(df, type) {
 #'    want to convert, or ton integer vector containing the indices of the
 #'    columns. Can be used to force conversion of non integer columns.
 #'
-#' @return The converted data frame.
+#' @return The converted \code{data.frame}.
 #'
 #' @examples
 #' # Convert an integer data frame

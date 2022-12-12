@@ -13,6 +13,9 @@ match2(data_matrix, metadata, metadata_type)
 
 \item{metadata_type}{"sample" or "variable" depending on metadata content}
 }
+\value{
+\code{character} vector a list of errors encountered
+}
 \description{
 match2
 To check if data_matrix and (variable or sample)metadata match regarding
