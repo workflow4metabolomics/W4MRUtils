@@ -1,23 +1,33 @@
 
 # R=/home/lpavot/R-versions/R-4.1.2/bin/R
 R=R
+REXEC=$(R) -q -e
 package=W4MRUtils
 version = $(shell grep -Po "Version: .*" ./DESCRIPTION |cut -d \  -f 2)
 use_kind = Imports
 PACKAGE_FILE_NAME = $(package)_$(version).tar.gz
 
+man_rd_files=$(shell ls man/*.Rd)
+man_html_files=$(man_rd_files:%.Rd=%.html)
+sources_files=$(shell ls R/*.R)
+description=DESCRIPTION
+namespace=NAMESPACE
+readmemd=README.md
+readmermd=README.Rmd
+
+vignettes_rd_files=$(shell ls vignettes/*.Rmd)
+vignettes_html_files=$(vignettes_rd_files:%.Rmd=%.html)
+
 # TARGET = CRAN
 # TARGET = BIOC
 
-CHECK = $(R) -q -e "devtools::check(pkg = '$(shell pwd)')"
+CHECK = $(REXEC) "devtools::check(pkg = '$(shell pwd)')"
 ifeq ($(TARGET),CRAN)
 	CHECK = $(R) CMD check --as-cran $(PACKAGE_FILE_NAME)
 endif
 ifeq ($(TARGET),BIOC)
 	CHECK = $(R) CMD BiocCheck $(PACKAGE_FILE_NAME)
 endif
-
-
 
 
 help_string=\n \
@@ -54,51 +64,32 @@ mail: $(USER)@inrae.fr \n \
 version: $(version) \n \
 creation date: $(shell date --rfc-email)\n \
 
-render_man='\
-lapply( \
-  file.path("man", list.files("man", pattern="*.Rd")), \
-  \(x)tools::Rd2HTML(x, out=sprintf("%s.html", substr(x, 0, nchar(x)-3))) \
-)'
-
 help		:
 	@printf -- "$(help_string)"
 
 
+new_vignette_%	:
+	$(MAKE) new_vignette name=$*
+
 new_vignette		:
-	@$(R) -q -e 'usethis::use_vignette("$(name)")'
+	@$(REXEC) 'usethis::use_vignette("$(name)")'
 
-render_vignettes:
-	@$(R) -q -e 'devtools::build_rmd(file.path("vignettes", list.files("vignettes", pattern="*.Rd")))'
+render_vign: $(vignettes_html_files)
 
-render_doc: remove_rendered_doc
-	@$(R) -q -e ${render_man} >/dev/null
+vignettes/%.html: vignettes/%.Rmd
+	@echo Rendering vignettes page for $^
+	@$(REXEC) 'devtools::build_rmd("$^")'
 
-remove_rendered_doc:
-	@- rm man/*.html
+render_man: $(man_html_files)
 
-# one of bioc, cran, github, svn, local, url
-use_%_package:
-	@$(R) -q -e 'devtools::install_$*("$(name)")'
-	@$(R) -q -e 'usethis::use_package("$(name)", type="$(use_kind)")'
+man/%.html: man/%.Rd
+	@echo Rendering man page for $^
+	@$(REXEC) 'tools::Rd2HTML("$^", out="$@")'
 
-create_test	:
-	@$(R) -q -e 'usethis::use_test("$(name)")'
 
-all: clean doc test build check quick_install
+build	: doc $(package)_$(version).tar.gz
 
-test		:doc quick_test coverage
-quick_test	: quick_install
-	@echo "Running tests..."
-	@$(R) -q -e "devtools::test('.')"
-	@echo "Finished."
-
-build		:	clean doc quick_build
-quick_build	:
-	@echo "Building package..."
-	@$(R) CMD build "."
-	@echo "Built."
-
-check: quick_build
+check: build
 	@(	\
 		cp $(package)_$(version).tar.gz /tmp/ ;	\
 		cd /tmp/ ;	\
@@ -106,28 +97,90 @@ check: quick_build
 	) ;
 	@echo "Checked."
 
-clean		:
-	@-ls $(package)_$(version).tar.gz  2> /dev/null | xargs -I file echo "Deleting "file
-	@-$(RM) $(package)_$(version).tar.gz 2> /dev/null
-	@-$(RM) NAMESPACE 2> /dev/null
 
-doc			: clean quick_install
-	@echo "Generating doc..."
-	@$(R) -q -e "rmarkdown::render('README.Rmd')"
-	@$(R) -q -e "devtools::document('.')"
-	@$(R) -q -e 'library("roxygen2");roxygenize(".");warnings()'
-	@echo "Generated."
+$(package)_$(version).tar.gz:
+	@echo "Building package..."
+	@$(R) CMD build "."
+	@echo "Built."
 
-install: build
-	@$(MAKE) quick_install
+doc		: $(readmemd) docfiles render_vign render_man
+
+docfiles: $(sources_files)
+	@$(REXEC) "devtools::document('.')"
+
+$(readmemd):$(readmermd)
+	$(REXEC) "rmarkdown::render('README.Rmd')"
+
+test		: quick_test
+	@$(REXEC) 'covr::report(covr::package_coverage(), "coverage.html")'
+
+quick_test	: quick_install
+	@echo "Running tests..."
+	@$(REXEC) "devtools::test('.')"
+	@echo "Finished."
+
 quick_install: remove_package
-	@$(R) -q -e 'devtools::install(".", dependencies=FALSE, repos=NULL, type="source")'
-
-coverage:
-	@$(R) -q -e 'covr::report(covr::package_coverage(), "coverage.html")'
-
-lint:
-	$(R) -q -e 'lintr::lint_dir("R")'
+	@$(REXEC) 'devtools::install(".", dependencies=FALSE, repos=NULL, type="source")'
 
 remove_package:
-	@$(R) -q -e 'if ("$(package)" %in% rownames(installed.packages()))remove.packages("$(package)")'
+	@$(REXEC) 'if ("$(package)" %in% rownames(installed.packages()))remove.packages("$(package)")'
+
+
+
+# # one of bioc, cran, github, svn, local, url
+# use_%_package:
+# 	@$(REXEC) 'devtools::install_$*("$(name)")'
+# 	@$(REXEC) 'usethis::use_package("$(name)", type="$(use_kind)")'
+
+# create_test	:
+# 	@$(REXEC) 'usethis::use_test("$(name)")'
+
+# all: clean doc test build check quick_install
+
+# test		:doc quick_test coverage
+# quick_test	: quick_install
+# 	@echo "Running tests..."
+# 	@$(REXEC) "devtools::test('.')"
+# 	@echo "Finished."
+
+# build		:	clean doc quick_build
+# quick_build	: $(package)_$(version).tar.gz
+
+# $(package)_$(version).tar.gz:
+# 	@echo "Building package..."
+# 	@$(R) CMD build "."
+# 	@echo "Built."
+
+# check: quick_build
+# 	@(	\
+# 		cp $(package)_$(version).tar.gz /tmp/ ;	\
+# 		cd /tmp/ ;	\
+# 		$(CHECK) ;	\
+# 	) ;
+# 	@echo "Checked."
+
+# clean		:
+# 	@-ls $(package)_$(version).tar.gz  2> /dev/null | xargs -I file echo "Deleting "file
+# 	@-$(RM) $(package)_$(version).tar.gz 2> /dev/null
+# 	@-$(RM) NAMESPACE 2> /dev/null
+
+# doc			: clean quick_install
+# 	@echo "Generating doc..."
+# 	@$(REXEC) "rmarkdown::render('README.Rmd')"
+# 	@$(REXEC) "devtools::document('.')"
+# 	@$(REXEC) 'library("roxygen2");roxygenize(".");warnings()'
+# 	@echo "Generated."
+
+# install: build
+# 	@$(MAKE) quick_install
+# quick_install: remove_package
+# 	@$(REXEC) 'devtools::install(".", dependencies=FALSE, repos=NULL, type="source")'
+
+# coverage:
+# 	@$(REXEC) 'covr::report(covr::package_coverage(), "coverage.html")'
+
+# lint:
+# 	$(REXEC) 'lintr::lint_dir("R")'
+
+# remove_package:
+# 	@$(REXEC) 'if ("$(package)" %in% rownames(installed.packages()))remove.packages("$(package)")'

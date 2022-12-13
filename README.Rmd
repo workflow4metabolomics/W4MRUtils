@@ -66,35 +66,6 @@ or
 remove.packages("W4MRUtils")
 ```
 
-
-## Usages
-
-### parsing parameters
-
-R script command line:
-```{bash how to run scritp, eval=FALSE}
-Rscript my_script.R --a-integer 42 --a-float 3.14 --a-boolean FALSE --a-list 1,2,3
-```
-R script content:
-
-```{r example parameters}
-param_printer <- function(name, args) {
-  cat(sprintf(
-    "%s[%s] %s",
-    name,
-    class(args[[name]])[1],
-    paste(args[[name]], collapse = " ")
-  ))
-}
-args <- W4MRUtils::parse_args(commandArgs())
-param_printer("a-integer", args)
-param_printer("a-float", args)
-param_printer("a-boolean", args)
-param_printer("a-list", args)
-args$`a-list` <- as.numeric(strsplit(args$`a-list`, ",")[[1]])
-param_printer("a-list", args)
-```
-
 ## XML Wrapper
 
 Please follow [the guidelines](https://galaxy-iuc-standards.readthedocs.io/en/latest/best_practices/tool_xml.html)
