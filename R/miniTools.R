@@ -12,6 +12,8 @@
 #' V0: script structure + first functions
 #' V1: addition of functions to handle special characters in identifiers
 #'
+NULL
+
 #' @title source local
 #'
 #' @description source_local

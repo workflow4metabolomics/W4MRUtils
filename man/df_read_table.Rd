@@ -22,12 +22,20 @@ The loaded data frame.
 df_read_table
 Reads a data frame from a file and possibly convert integer columns to
 numeric. This function calls the built-in \code{read.table()} method and
-then \code{df_force_numeric()}.
+then \code{W4MRUtils::df_force_numeric()}.
 }
 \examples{
-\dontrun{
 # Load a data frame from a file and convert integer columns
-df <- df_read_table("/path/to/file.csv", sep = ",", force_numeric = TRUE)
-}
+file_path <- system.file(
+  "extdata",
+  "example_df_read_table.csv",
+  package="W4MRUtils"
+)
+str(W4MRUtils::df_read_table(
+  file_path,
+  sep = ",",
+  force_numeric = TRUE,
+  header=TRUE
+))
 
 }

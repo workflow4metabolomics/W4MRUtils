@@ -27,9 +27,23 @@ final tables
 }
 \examples{
 \donttest{
-B <- reproduce_id(datamatrix, sample_metadata, "sample", A)
-datamatrix <- B$data_matrix
-sample_metadata <- B$metadata
+
+myDM <- data.frame(data = 1:6, a = 2:7, b = 3:8, c = 2:7, d = 3:8, e = 2:7)
+myvM <- data.frame(variable = 1:6, x = 4:9, y = 2:7, z = 3:8)
+
+A <- W4MRUtils::stock_id(myDM, myvM, "variable")
+myDM <- A$dataMatrix
+myvM <- A$Metadata
+A <- A$id.match
+
+## processing that may change order or requires specific identifiers format
+## ...
+datamatrix <- as.data.frame(myDM)
+sample_metadata <- as.data.frame(myvM)
+
+B <- W4MRUtils::reproduce_id(datamatrix, sample_metadata, "variable", A)
+datamatrix <- B$dataMatrix
+sample_metadata <- B$Metadata
 }
 
 }

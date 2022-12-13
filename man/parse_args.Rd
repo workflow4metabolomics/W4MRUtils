@@ -8,7 +8,7 @@ parse_args(args = NULL, convert_booleans = TRUE, convert_numerics = TRUE)
 }
 \arguments{
 \item{args}{optional, provide arguments to parse.
-This function will use 'commandArgs()' by default}
+This function will use 'commandArgs()' if args is not provided}
 
 \item{convert_booleans}{logical - tells the function to convert
 values into logical if their value is "TRUE" or "FALSE".}
@@ -40,7 +40,7 @@ args$`some-list` <- as.numeric(strsplit(args$`some-list`, ",")[[1]])
 }\if{html}{\out{</div>}}
 }
 \examples{
-parameters <- parse_args()
+parameters <- W4MRUtils::parse_args()
 print(parameters$`some-parameter`)
 
 }

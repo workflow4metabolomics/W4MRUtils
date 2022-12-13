@@ -82,14 +82,21 @@ df_force_numeric <- function(df, cols = NULL) {
 #' @param   force_numeric   If set to TRUE, all integer columns will be
 #'    converted to numeric.
 #' @param   ...   Parameter to transmit to the read.table function.
-#'
 #' @return  The loaded data frame.
 #'
 #' @examples
-#' \dontrun{
 #' # Load a data frame from a file and convert integer columns
-#' df <- df_read_table("/path/to/file.csv", sep = ",", force_numeric = TRUE)
-#' }
+#' file_path <- system.file(
+#'   "extdata",
+#'   "example_df_read_table.csv",
+#'   package="W4MRUtils"
+#' )
+#' str(W4MRUtils::df_read_table(
+#'   file_path,
+#'   sep = ",",
+#'   force_numeric = TRUE,
+#'   header=TRUE
+#' ))
 #'
 #' @export
 df_read_table <- function(file, force_numeric = FALSE, ...) {

@@ -25,6 +25,6 @@ Converts integer columns of a data frame into numeric.
 \examples{
 # Convert an integer data frame
 df <- data.frame(a = as.integer(c(1, 4)), b = as.integer(c(6, 5)))
-df <- df_force_numeric(df)
+df <- W4MRUtils::df_force_numeric(df)
 
 }

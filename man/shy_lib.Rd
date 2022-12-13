@@ -7,7 +7,7 @@
 shy_lib(...)
 }
 \arguments{
-\item{...}{Names of libraries to load}
+\item{...}{Name of libraries to load}
 }
 \value{
 a \code{list} of attached packages
@@ -18,7 +18,9 @@ Function to call packages without printing all the verbose
 (only getting the essentials, like warning messages for example)
 }
 \examples{
-\donttest{shy_lib("xcms","pcaMethods")}
+\donttest{
+   W4MRUtils::shy_lib("base","utils")
+}
 
 }
 \author{

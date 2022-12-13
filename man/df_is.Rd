@@ -29,8 +29,8 @@ This function tests if the columns of a data frame are all of the same type.
 df <- data.frame(a = c(1, 4), b = c(6, 5))
 # should return FALSE since in R all integers are converted to
 # numeric by default.
-df_is(df, "integer")
+W4MRUtils::df_is(df, "integer")
 # should return TRUE.
-df_is(df, "numeric")
+W4MRUtils::df_is(df, "numeric")
 
 }

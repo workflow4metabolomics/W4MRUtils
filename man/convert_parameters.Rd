@@ -27,7 +27,10 @@ only converted once.
 boolean_converter <- function(x) {
   return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
 }
-parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))
+parameters <- W4MRUtils::convert_parameters(
+  list("x" = "TRUE"),
+  c(boolean_converter)
+)
 print(parameters$`some-parameter`)
 ## "TRUE" has becomes TRUE.
 
