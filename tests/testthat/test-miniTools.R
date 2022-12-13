@@ -60,4 +60,20 @@ test_that("Testing stock_id", {
 })
 
 test_that("Testing reproduce_id", {
+
+  datamatrix_a <- data.frame(
+    data = 1:6, a = 2:7, b = 3:8, c = 2:7, d = 3:8, e = 2:7
+  )
+  variablemeta_a <- data.frame(
+    variable = 1:6, x = 4:9, y = 2:7, z = 3:8
+  )
+  stored <- stock_id(datamatrix_a, variablemeta_a, "variable")
+
+  datamatrix <- as.data.frame(stored$dataMatrix)
+  variable_metadata <- as.data.frame(stored$Metadata)
+  stored <- stored$id.match
+
+  reproduced <- reproduce_id(datamatrix, variable_metadata, "variable", stored)
+  testthat::expect_identical(datamatrix_a, reproduced$dataMatrix)
+  testthat::expect_identical(variablemeta_a, reproduced$Metadata)
 })
