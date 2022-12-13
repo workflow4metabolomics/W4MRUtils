@@ -23,9 +23,9 @@ NULL
 #' df <- data.frame(a = c(1, 4), b = c(6, 5))
 #' # should return FALSE since in R all integers are converted to
 #' # numeric by default.
-#' df_is(df, "integer")
+#' W4MRUtils::df_is(df, "integer")
 #' # should return TRUE.
-#' df_is(df, "numeric")
+#' W4MRUtils::df_is(df, "numeric")
 #'
 #' @export
 df_is <- function(df, type) {
@@ -49,7 +49,7 @@ df_is <- function(df, type) {
 #' @examples
 #' # Convert an integer data frame
 #' df <- data.frame(a = as.integer(c(1, 4)), b = as.integer(c(6, 5)))
-#' df <- df_force_numeric(df)
+#' df <- W4MRUtils::df_force_numeric(df)
 #'
 #' @export
 df_force_numeric <- function(df, cols = NULL) {
@@ -75,7 +75,7 @@ df_force_numeric <- function(df, cols = NULL) {
 #' @description df_read_table
 #' Reads a data frame from a file and possibly convert integer columns to
 #'    numeric. This function calls the built-in \code{read.table()} method and
-#'    then \code{df_force_numeric()}.
+#'    then \code{W4MRUtils::df_force_numeric()}.
 #'
 #' @param   file            The path to the file you want to load. See
 #'    \code{read.table()} documentation for more information.

@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' \donttest{
-#'    source_local("filter_script.R","RcheckLibrary.R")
+#'    W4MRUtils::source_local("filter_script.R","RcheckLibrary.R")
 #'  }
 #' @examples
 #' \donttest{
@@ -49,7 +49,9 @@ NULL
 #' @return a \code{list} of attached packages
 #'
 #' @examples
-#' \donttest{shy_lib("xcms","pcaMethods")}
+#' \donttest{
+#'    W4MRUtils::shy_lib("base", "utils")
+#' }
 #'
 #' @author M.Petera
 #'
@@ -96,7 +98,7 @@ shy_lib <- function(...) {
 #'
 #' @author L.Pavot
 #' @examples
-#' parameters <- parse_args()
+#' parameters <- W4MRUtils::parse_args()
 #' print(parameters$`some-parameter`)
 #'
 #' @export
@@ -158,7 +160,10 @@ parse_args <- function(
 #' boolean_converter <- function(x) {
 #'   return(if (x == "TRUE") TRUE else if (x == "FALSE") FALSE else x)
 #' }
-#' parameters <- convert_parameters(list("x" = "TRUE"), c(boolean_converter))
+#' parameters <- W4MRUtils::convert_parameters(
+#'   list("x" = "TRUE"),
+#'   c(boolean_converter)
+#' )
 #' print(parameters$`some-parameter`)
 #' ## "TRUE" has becomes TRUE.
 #'
@@ -202,7 +207,7 @@ convert_parameters <- function(args, converters) {
 #'
 #' @examples
 #' \donttest{
-#' A <- stock_id(myDM, mysM, "sample")
+#' A <- W4MRUtils::stock_id(myDM, mysM, "sample")
 #' myDM <- A$data_matrix
 #' mysM <- A$metadata
 #' A <- A$id_match
