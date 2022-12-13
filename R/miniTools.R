@@ -207,10 +207,23 @@ convert_parameters <- function(args, converters) {
 #'
 #' @examples
 #' \donttest{
-#' A <- W4MRUtils::stock_id(myDM, mysM, "sample")
-#' myDM <- A$data_matrix
-#' mysM <- A$metadata
-#' A <- A$id_match
+#'
+#' myDM <- data.frame(data = 1:6, a = 2:7, b = 3:8, c = 2:7, d = 3:8, e = 2:7)
+#' myvM <- data.frame(variable = 1:6, x = 4:9, y = 2:7, z = 3:8)
+#'
+#' A <- W4MRUtils::stock_id(myDM, myvM, "variable")
+#' myDM <- A$dataMatrix
+#' myvM <- A$Metadata
+#' A <- A$id.match
+#'
+#' ## processing that may change order or requires specific identifiers format
+#' ## ...
+#' datamatrix <- as.data.frame(myDM)
+#' sample_metadata <- as.data.frame(myvM)
+#'
+#' B <- W4MRUtils::reproduce_id(datamatrix, sample_metadata, "variable", A)
+#' datamatrix <- B$dataMatrix
+#' sample_metadata <- B$Metadata
 #' }
 #'
 #' @author M.Petera
@@ -259,13 +272,7 @@ stock_id <- function(data_matrix, metadata, metadata_type) {
 #' @return a named \code{list} with two elements:
 #'  data_matrix: the processed data matrix with its original names and order
 #'  metadata: the processed metadata, with its original names and order.
-#'
-#' @examples
-#' \donttest{
-#' B <- reproduce_id(datamatrix, sample_metadata, "sample", A)
-#' datamatrix <- B$data_matrix
-#' sample_metadata <- B$metadata
-#' }
+#' @inherit stock_id examples
 #'
 #' @author M.Petera
 #'
@@ -320,5 +327,5 @@ reproduce_id <- function(data_matrix, metadata, metadata_type, id_match) {
   }
   rownames(data_matrix) <- NULL
   # return datasets - - - - - - - - - - -
-  return(list(data_matrix = data_matrix, metadata = metadata))
+  return(list(dataMatrix = data_matrix, Metadata = metadata))
 }
