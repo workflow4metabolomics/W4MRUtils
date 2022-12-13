@@ -13,27 +13,4 @@ to make things easier (lightening code, reducing verbose...)
 
 V0: script structure + first functions
 V1: addition of functions to handle special characters in identifiers
-
-source_local
-Fonction pour sourcer les scripts R requis
-/!\ ATTENTION : actuellement la fonction n'est pas chargee au lancement du
-script, il faut donc la copier-coller dans le wrapper R pour pouvoir
-l'utiliser.
-}
-\examples{
-\donttest{
-   source_local("filter_script.R","RcheckLibrary.R")
- }
-\donttest{
-  source_local <- function(...) {
-    argv <- commandArgs(trailingOnly = FALSE)
-    base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
-    lapply(
-      list(...),
-      function(path) {
-        source(paste(base_dir, path, sep = "/"))
-      }
-    )
-  }
-}
 }

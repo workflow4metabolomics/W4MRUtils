@@ -17,29 +17,22 @@ NULL
 #' @title source local
 #'
 #' @description source_local
-#' Fonction pour sourcer les scripts R requis
-#' /!\ ATTENTION : actuellement la fonction n'est pas chargee au lancement du
-#'  script, il faut donc la copier-coller dans le wrapper R pour pouvoir
-#' l'utiliser.
+#' Transforms a path to be relative to the main script, and sources the path.
+#' This helps source files located relatively to the main script without
+#' the need to know from where it was run.
+#' @param ... paths, character vector of file paths to source
+#' @return a vector resulting from the sourcing of the files provided.
 #'
 #' @examples
 #' \donttest{
-#'    W4MRUtils::source_local("filter_script.R","RcheckLibrary.R")
-#'  }
-#' @examples
-#' \donttest{
-#'   source_local <- function(...) {
-#'     argv <- commandArgs(trailingOnly = FALSE)
-#'     base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
-#'     lapply(
-#'       list(...),
-#'       function(path) {
-#'         source(paste(base_dir, path, sep = "/"))
-#'       }
-#'     )
-#'   }
+#'    W4MRUtils::source_local("example.R", "RcheckLibrary.R")
 #' }
-NULL
+#' @export
+source_local <- function(...) {
+  argv <- commandArgs(trailingOnly = FALSE)
+  base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
+  return(lapply(file.path(base_dir, c(...)), source))
+}
 
 #' @title Shy Lib
 #'
@@ -60,7 +53,7 @@ NULL
 #' @export
 shy_lib <- function(...) {
   lapply(
-    list(...),
+    c(...),
     function(package) {
       suppressPackageStartupMessages(library(package, character.only = TRUE))
     }
