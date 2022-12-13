@@ -19,6 +19,7 @@ building R package:
     - docker-sauron
 
 checking:
+  needs: ["building R package"]
   stage: check
   allow_failure: true
   script:
@@ -35,6 +36,7 @@ checking:
 # Coverage: \d+\.\d+
 
 testing:
+  needs: [checking]
   stage: test
   allow_failure: true
   when: on_success
