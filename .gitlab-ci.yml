@@ -1,9 +1,10 @@
-image: rocker/tidyverse
 
 variables:
   cran_url: https://cran.irsn.fr
   set_cran: export CRAN=${cran_url};
   set_rcran: options(repos='$cran_url');
+  DOCKER_IMAGE: w4mrutils
+
 
 stages:
   - build
@@ -11,21 +12,33 @@ stages:
   - test
   - deploy
 
-building R package:
-  stage: build
-  script:
-    - R -q -e "${set_rcran}remotes::install_deps(dependencies = TRUE)"
+Build docker image:
+  stage:
+    build
   tags:
-    - docker-sauron
+    - shell-sauron
+  script:
+    - last_image() { docker image ls --format "{{.Tag}}" $DOCKER_IMAGE | grep -Po '\d+'; }
+    - echo "==================================";
+    - echo "[info] Building Docker image for $DOCKER_IMAGE ";
+    - echo "Last image build is $(last_image) - $(($(date +'%Y%m%d') - $(last_image))) days old."
+    - if [[ "$(last_image)" = "" ]] || [[ $(($(date +'%Y%m%d') - $(last_image))) -ge 30 ]]; then
+        echo "Rebuilding $DOCKER_IMAGE image..." ;
+        docker rmi $DOCKER_IMAGE 2>/dev/null || true ;
+        docker rmi $DOCKER_IMAGE:$(last_image) 2>/dev/null || true ;
+        docker build -t $DOCKER_IMAGE $CI_PROJECT_DIR ;
+        docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:$(date +'%Y%m%d') ;
+      else
+        echo "Already built." ;
+      fi
 
 checking:
-  needs: ["building R package"]
+  needs: ["Build docker image"]
+  image: $DOCKER_IMAGE
   stage: check
   allow_failure: true
   script:
-    - apt-get update && apt-get install -y qpdf
-    - R -q -e "${set_rcran}install.packages(c('DT', 'covr', 'qpdf'))"
-    - R -q -e "${set_rcran}devtools::check('$CI_PROJECT_DIR')"
+    - R -q -e "devtools::check('$CI_PROJECT_DIR')"
   tags:
     - docker-sauron
 
@@ -38,26 +51,29 @@ checking:
 testing:
   needs: [checking]
   stage: test
+  image: $DOCKER_IMAGE
   allow_failure: true
   when: on_success
   only:
     - dev
     - main
   script:
-    - R -q -e "${set_rcran}install.packages(c('DT', 'covr'))"
     - R -q -e "covr::gitlab(quiet = FALSE)"
   artifacts:
     paths:
       - public
   tags:
     - docker-sauron
-  coverage: '/ Coverage: \d+\.\d+/'
+  coverage:
+    '/ Coverage: \d+\.\d+/'
 
 # To produce a code coverage report as a GitLab page see
 # https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/
 
 pages:
+  needs: [testing]
   stage: deploy
+  image: $DOCKER_IMAGE
   dependencies:
     - testing
   script:
@@ -72,12 +88,15 @@ pages:
     - docker-sauron
 
 building conda recipe:
-  allow_failure: true
-  image: quay.io/condaforge/linux-anvil-cos7-x86_64
+  allow_failure:
+    true
+  image:
+    quay.io/condaforge/linux-anvil-cos7-x86_64
   only:
     - dev
     - main
-  stage: build
+  stage:
+    build
   script:
     - conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
   tags:
