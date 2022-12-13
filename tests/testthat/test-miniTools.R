@@ -1,4 +1,8 @@
 
+test_that("Testing source_local", {
+  testthat::expect_warning(source_local("/tmp/test.R"), regex = NA)
+})
+
 test_that("Testing shy_lib", {
   testthat::expect_warning(shy_lib("base"), regex = NA)
 })
