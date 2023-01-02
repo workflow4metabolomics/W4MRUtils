@@ -58,6 +58,7 @@ testing:
     - dev
     - main
   script:
+    - R -q -e "devtools::test('$CI_PROJECT_DIR')"
     - R -q -e "covr::gitlab(quiet = FALSE)"
   artifacts:
     paths:
