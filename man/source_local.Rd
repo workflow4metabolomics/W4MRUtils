@@ -10,7 +10,7 @@ source_local(...)
 \item{...}{paths, character vector of file paths to source}
 }
 \value{
-a vector of
+a vector resulting from the sourcing of the files provided.
 }
 \description{
 source_local
@@ -20,7 +20,6 @@ the need to know from where it was run.
 }
 \examples{
 \donttest{
-   
-   W4MRUtils::source_local("example.R","RcheckLibrary.R")
+   W4MRUtils::source_local("example.R", "RcheckLibrary.R")
 }
 }

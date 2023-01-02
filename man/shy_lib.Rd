@@ -19,7 +19,7 @@ Function to call packages without printing all the verbose
 }
 \examples{
 \donttest{
-   W4MRUtils::shy_lib("base","utils")
+   W4MRUtils::shy_lib("base", "utils")
 }
 
 }

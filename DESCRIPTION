@@ -1,5 +1,5 @@
 Package: W4MRUtils
-Title: Utils List for W4M - Workflow For Metabolomics
+Title: Utils List for W4M - Workflow for Metabolomics
 Version: 0.0.1
 Authors@R: 
     person("Lain", "Pavot", "", "lain.pavot@inrae.fr", role = c("aut", "cre"))
