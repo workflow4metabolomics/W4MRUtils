@@ -13,38 +13,38 @@ It contains some utility functions
 You can install the development version of W4MRUtils like so:
 
 ``` bash
-git clone https://github.com/workflow4metabolomics/W4MRUtils
-cd W4MRUtils
+$ git clone https://github.com/workflow4metabolomics/W4MRUtils
+$ cd W4MRUtils
 ```
 
 then
 
 ``` bash
-make install
+$ make install
 ```
 
 or
 
 ``` r
-rmarkdown::render("README.Rmd")
-devtools::document(".")
-roxygen2::roxygenize(".")
-devtools::test(".")
-devtools::install(".", dependencies = FALSE, repos = NULL, type = "source")
+> rmarkdown::render("README.Rmd")
+> devtools::document(".")
+> roxygen2::roxygenize(".")
+> devtools::test(".")
+> devtools::install(".", dependencies = FALSE, repos = NULL, type = "source")
 ```
 
 ## Uninstallation
 
-You can install the development version of W4MRUtils like so:
+You can uninstall the version of W4MRUtils you installed with:
 
 ``` bash
-make remove_package
+$ make remove_package
 ```
 
 or
 
 ``` r
-remove.packages("W4MRUtils")
+> remove.packages("W4MRUtils")
 ```
 
 ## XML Wrapper
