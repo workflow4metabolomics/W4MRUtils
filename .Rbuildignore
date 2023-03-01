@@ -10,3 +10,6 @@
 ^Dockerfile$
 ^man/*.html$
 ^vignettes/*.html$
+^docs$
+^.*\.sublime-workspace$
+^.*\.sublime-project$
