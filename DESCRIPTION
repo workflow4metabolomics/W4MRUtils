@@ -19,6 +19,8 @@ Suggests:
     covr,
     DT,
     knitr,
+    optparse,
+    pkgdown,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
@@ -27,3 +29,8 @@ Collate:
     dataframe_helpers.R
     miniTools.R
     RcheckLibrary.R
+    optparse_helper.R
+    galaxy.R
+    logging.R
+    utils.R
+
