@@ -1,0 +1,72 @@
+---
+title: "logging"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{logging}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# General informations
+
+The logging of informations is important to have useful logs to explicit
+processings.
+Info logs are used to show general informations.
+Warning logs are used to show potential errors, that are not blocking for
+the processing.
+Error logs are used to explicit better errors, before stopping the
+program.
+Debug logs are usually activated with the command line flag `-d`. They
+are used to show usefull debug informations and should be very widely
+used.
+Verbose are like info logs, but devivers optionnal informations. It is
+usually activated with the `-v` or `-V` command line flag.
+INTERNAL logs are for the logger itself, when it detects internal
+problems, like a closed output log file, or so.
+
+# formating
+
+By default, logs are formated using the following pattern:
+"[{{ level }}-{{ name }}-{{ time }}] - {{ message }}"
+You can change the format string when you create the logger with get_logger:
+
+```R
+get_logger(
+  "Processing",
+  format = "[{{ time }}-{{ name }}] - {{ message }}"
+)
+```
+
+# coloring
+By default, a coloring is used to easily differentiate kinds of log.
+The coloring is the following:
+  - info: green
+  - warning: orange
+  - error: red
+  - debug: purplue
+  - verbose: blue
+  - INTERNAL: white
+
+This coloring can be changed by providing a named list to the get_logger
+function:
+
+```R
+get_logger(
+  "Processing",
+  coloring = list(
+    debug = "red",
+    warning = "green",
+    error = "purple",
+    verbose = "blue",
+    info = "orange",
+    INTERNAL = "white"
+  )
+)
+```
