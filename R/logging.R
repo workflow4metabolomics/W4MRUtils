@@ -433,3 +433,12 @@ W4MLogger$methods(.get_formated__ = function(level, message) {
   content <- gsub("{{ message }}", message, content, fixed = TRUE)
   return(content)
 })
+
+
+W4MLogger$methods(finalize = function() {
+  for (file in .self$out_file) {
+    if (!is.null(file) && isOpen(file)) {
+      close(file)
+    }
+  }
+})
