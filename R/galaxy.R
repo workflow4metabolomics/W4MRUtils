@@ -105,6 +105,41 @@ show_galaxy_header <- function(
 }
 
 #' @export
+show_galaxy_footer <- function(
+  tool_name,
+  tool_version,
+  args = NULL,
+  logger = NULL
+) {
+  add <- function(text = "") {
+    gx_footer <<- sprintf("%s\n%s", gx_footer, text)
+  }
+  gx_footer <- sprintf(
+    "End of '%s' Galaxy module call: %s",
+    tool_name,
+    as.character(Sys.time())
+  )
+  add()
+  sessioninfo <- sessionInfo()
+  add(sessioninfo$R.version$version.string)
+  add()
+  add("Main packages:")
+  for (pkg in names(sessioninfo$otherPkgs)) {
+    add(paste(pkg, packageVersion(pkg)))
+  }
+  add()
+  add("Other loaded packages:")
+  for (pkg in names(sessioninfo$loadedOnly)) {
+    add(paste(pkg, packageVersion(pkg)))
+  }
+  if (is.null(logger)) {
+    cat(gx_footer)
+  } else {
+    logger$default(gx_footer)
+  }
+}
+
+#' @export
 get_r_env <- function() {
   env_vars <- Sys.getenv()
   env_vars[grepl(x = names(env_vars), pattern = "^R_.*$")]
