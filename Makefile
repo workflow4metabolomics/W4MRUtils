@@ -19,7 +19,7 @@ man_html_files=$(man_rd_files:%.Rd=%.html)
 vignettes_rd_files=$(shell ls vignettes/*.Rmd)
 vignettes_html_files=$(vignettes_rd_files:%.Rmd=%.html)
 
-# TARGET = CRAN
+TARGET = CRAN
 # TARGET = BIOC
 
 CHECK = $(REXEC) "devtools::check(pkg = '$(shell pwd)')"
