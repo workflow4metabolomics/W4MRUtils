@@ -1,6 +1,4 @@
 
-
-
 #' @export
 optparse_flag <- function(
   help = "No documentation yet.",
@@ -8,7 +6,7 @@ optparse_flag <- function(
   default = FALSE
 ) {
   return(list(
-    opt_str = c(short),
+    opt_str = short,
     action = "store_true",
     help = help,
     default = default
@@ -22,7 +20,7 @@ optparse_numeric <- function(
   default = 0
 ) {
   return(list(
-    opt_str = c(short),
+    opt_str = short,
     type = "numeric",
     action = "store",
     help = help,
@@ -38,7 +36,7 @@ optparse_integer <- function(
   default = 0
 ) {
   return(list(
-    opt_str = c(short),
+    opt_str = short,
     type = "integer",
     action = "store",
     help = help,
@@ -54,7 +52,7 @@ optparse_character <- function(
   default = 0
 ) {
   return(list(
-    opt_str = c(short),
+    opt_str = short,
     type = "character",
     action = "store",
     help = help,
@@ -64,17 +62,46 @@ optparse_character <- function(
 }
 
 #' @export
+optparse_list <- function(
+  help = "No documentation yet.",
+  short = NULL,
+  default = "",
+  of = "character",
+  sep = ","
+) {
+  return(list(
+    opt_str = short,
+    type = "character",
+    action = "callback",
+    help = help,
+    default = default,
+    metavar = of,
+    callback = function(option_parser, param, value, ...) {
+      if (of == "character") {
+        transfo <- as.character
+      } else if (of == "numeric") {
+        transfo <- as.numeric
+      } else if (of == "integer") {
+        transfo <- as.integer
+      }
+      return(lapply(strsplit(value[[1]], sep, fixed = TRUE)[[1]], transfo))
+    }
+  ))
+}
+
+#' @export
 optparse_parameters <- function(
   ...,
   fix_hyphens = TRUE,
   fix_dots = TRUE,
-  add_trailing_hyphens = TRUE
+  add_trailing_hyphens = TRUE,
+  args = NULL
 ) {
   if (!suppressWarnings(requireNamespace("optparse", quietly = TRUE))) {
-    stop(paste(
+    stopaste(
       "To uses `optparse_parameters`, you need to install the",
       "\"optparse\" package or to add it to your tool's dependencies"
-    ))
+    )
   }
   optparse <- loadNamespace("optparse")
   parser <- optparse$OptionParser()
@@ -94,7 +121,12 @@ optparse_parameters <- function(
     definition$object <- parser
     definition$opt_str <- c(definition$opt_str, long)
     definition$dest <- original
+    definition$help <- definition$help
+    definition$callback <- definition$callback
     parser <- do.call(optparse$add_option, definition)
+  }
+  if (!is.null(args)) {
+    return(optparse$parse_args(parser, args = args))
   }
   return(optparse$parse_args(parser))
 }
