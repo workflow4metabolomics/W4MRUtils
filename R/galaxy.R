@@ -5,6 +5,58 @@
 NULL
 
 #' @export
+run_galaxy_processing <- function(
+  tool_name,
+  code,
+  tool_version = "unknown",
+  unmangle_parameters = TRUE,
+  args = NULL
+) {
+  logger <- get_logger(tool_name)
+  args <- suppressWarnings(parse_args(args = args)) # nolint:object_usage_linter
+  if (in_galaxy_env()) {
+    if (unmangle_parameters) {
+      args <- unmangle_galaxy_param(args)
+    }
+    show_galaxy_header(
+      tool_name,
+      tool_version = tool_version,
+      args = args,
+      logger = logger
+    )
+  }
+  env <- new.env()
+  env$args <- args
+  env$logger <- logger
+  in_error <- FALSE
+  result <- tryCatch({
+      eval(rlang::enexpr(code), env)
+    },
+    error = function(error) {
+      in_error <<- TRUE
+      logger$errorf("The tool %s has crashed.", tool_name)
+      logger$errorf("Error: %s", error)
+      return(NULL)
+    }
+  )
+  if (in_galaxy_env()) {
+    show_galaxy_footer(
+      tool_name,
+      tool_version = tool_version,
+      logger = logger
+    )
+  }
+  if (in_error) {
+    stopf(
+      "The tool %s - version %s ended in error.",
+      tool_name,
+      tool_version
+    )
+  }
+  return(result)
+}
+
+#' @export
 show_galaxy_header <- function(
   tool_name,
   tool_version,
