@@ -69,7 +69,7 @@ show_galaxy_header <- function(
   if (is.null(args)) {
     args <- commandArgs()
   }
-  sep <- paste0(rep("-", 68), collapse = "")
+  sep <- collapse(rep("-", 68))
   gx_header <- ""
   if (show_start_time) {
     gx_header <- sprintf(
@@ -81,19 +81,19 @@ show_galaxy_header <- function(
   }
   if (show_sys) {
     gx_header <- sprintf(
-      "%s%s\n%s\n",
+      "%s\n%s\n%s\n",
       gx_header,
-      paste0(capture.output(print(get_r_env())), collapse = "\n"),
+      collapse_lines(capture.output(print(get_r_env()))),
       sep
     )
   }
   if (show_parameters) {
     gx_header <- sprintf(
-      "%sParameters used in %s - %s:\n\n%s\n%s\n",
+      "%s\nParameters used in %s - version %s:\n\n%s\n%s\n",
       gx_header,
       tool_name,
       tool_version,
-      paste0(capture.output(str(as.list(args))), collapse = "\n"),
+      collapse_lines(capture.output(str(as.list(args)))),
       sep
     )
   }

@@ -19,6 +19,17 @@ printp <- function(...) {
   print(paste(...))
 }
 
+#' @export
+collapse <- function(..., sep = "") {
+  paste0(..., collapse = sep, sep = "")
+}
+
+#' @export
+collapse_lines <- function(..., sep = "\n") {
+  paste0(..., collapse = sep, sep = "")
+}
+
+#' @export
 check_param_type_n_length <- function(
   value,
   expected_type,
