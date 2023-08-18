@@ -39,7 +39,7 @@ w4m_loggers__ <- new.env()
 #' TRUE. Otherwise, a new W4MLogger instance.
 #'
 #' @examples
-#' ## let's say out program is divided in three big tasks:
+#' ## let's say our program is divided in three big tasks:
 #' ##   - the parsing
 #' ##   - the processing
 #' ##   - the output writing
@@ -150,6 +150,11 @@ W4MLogger <- setRefClass( ## nolint - This is a class name
     info = "function",
     warning = "function",
     error = "function",
+    debugf = "function",
+    verbosef = "function",
+    infof = "function",
+    warningf = "function",
+    errorf = "function",
     default = "function",
     out_func = "function",
     instantiated = "logical",
@@ -181,7 +186,6 @@ W4MLogger <- setRefClass( ## nolint - This is a class name
 #'
 #' See [get_logger] for example usages.
 NULL
-
 W4MLogger$methods(initialize = function(
   name,
   format = "[{{ level }}-{{ name }}-{{ time }}] - {{ message }}",
@@ -201,10 +205,10 @@ W4MLogger$methods(initialize = function(
   }
   not_ready <- function(...) {
     ## This is in case the logger is used before the set_info,
-    ## set_debug, etc function are called. This sould never happen.
+    ## set_debug, etc function are called. This should never happen.
     ## The only way I think it is possible, is if execution tree is
     ## modified at runtime. But who knows, perhaps I did a mistake!
-    ## This function is not even tested...
+    ## This function is not (will not be) even tested...
     stop(.self$.get_formated__("INTERNAL", "Logger called while not ready yet"))
   }
   callSuper(
@@ -228,9 +232,9 @@ W4MLogger$methods(initialize = function(
   .self$set_debug(value = show_debug)
   .self$set_verbose(value = show_verbose)
   if (!is.null(out_path)) {
-    .self$out_file <- sapply(
+    .self$out_file <- lapply(
       out_path,
-      function(x) file(x, open = "a"),
+      function(x) file(x, open = "a")
     )
   }
 })
@@ -322,6 +326,7 @@ W4MLogger$methods(.set_value_for__ = function(level, value, default) {
     func <- function(...) invisible(.self)
   }
   .self$field(level, func)
+  .self$field(paste0(level, "f"), function(...) func(..., format = TRUE))
   if (default) {
     .self$default <- func
   }
@@ -362,13 +367,17 @@ W4MLogger$methods(.internal_error__ = function(message) {
 #' @return this logger's instance ( \code{.self} )
 #'
 NULL
-W4MLogger$methods(.message__ = function(level, ...) {
+W4MLogger$methods(.message__ = function(level, ..., format = FALSE) {
   messages <- list(...)
   if (length(messages) > 1) {
-    for (message in messages) {
-      .self$.one_message__(level, message)
+    if (!format) {
+      ## no formating. Messages are all sent one by one.
+      for (message in messages) {
+        .self$.one_message__(level, message)
+      }
+      return(invisible(.self))
     }
-    return(invisible(.self))
+    messages <- sprintf(...)
   } else if (length(messages) == 0) {
     messages <- ""
   } else {
