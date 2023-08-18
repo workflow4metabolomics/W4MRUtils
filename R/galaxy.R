@@ -138,34 +138,55 @@ in_galaxy_env <- function() {
 
 #' @export
 unmangle_galaxy_param <- function(args) {
-  ## taken from lib/galaxy/util/__init__.py:mapped_chars
-  mapped_chars <- list(
-    `>` = "__gt__",
-    `<` = "__lt__",
-    `'` = "__sq__",
-    '\"' = "__dq__",
-    `[` = "__ob__",
-    `]` = "__cb__",
-    `{` = "__oc__",
-    `}` = "__cc__",
-    `@` = "__at__",
-    `\n` = "__cn__",
-    `\r` = "__cr__",
-    `\t` = "__tc__",
-    `#` = "__pd__"
-  )
   for (param in names(args)) {
-    if (is.character(args[[param]])) {
-      for (char in names(mapped_chars)) {
-        mangled <- mapped_chars[[char]]
-        args[[param]] <- gsub(
-          mangled,
-          char,
-          args[[param]],
-          fixed = TRUE
-        )
-      }
+    value <- args[[param]]
+    if (is.character(value)) {
+      value <- unmangle_galaxy_string(value)
     }
+    unmangled_param <- unmangle_galaxy_string(param)
+    if (unmangled_param != param) {
+      args[[param]] <- NULL
+    }
+    args[[unmangled_param]] <- value
   }
   return(args)
+}
+
+mapped_chars__ <- list(
+  `>` = "__gt__",
+  `<` = "__lt__",
+  `'` = "__sq__",
+  '\"' = "__dq__",
+  `[` = "__ob__",
+  `]` = "__cb__",
+  `{` = "__oc__",
+  `}` = "__cc__",
+  `@` = "__at__",
+  `\n` = "__cn__",
+  `\r` = "__cr__",
+  `\t` = "__tc__",
+  `#` = "__pd__"
+)
+
+mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
+
+unmangle_galaxy_string <- function(string) {
+  ## taken from lib/galaxy/util/__init__.py:mapped_chars
+
+  if (! any(grepl(
+    mapped_chars_regex__,
+    string,
+    ignore.case = TRUE
+  ))) {
+    return(string)
+  }
+  for (char in names(mapped_chars__)) {
+    string <- gsub(
+      mapped_chars__[[char]],
+      char,
+      string,
+      fixed = TRUE
+    )
+  }
+  return(string)
 }
