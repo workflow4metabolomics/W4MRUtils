@@ -4,6 +4,12 @@ praise <- function() character(0)
 encourage <- function() character(0)
 praise_emoji <- function() character(0)
 
+## Multiline match is just completely f***** up
+## so, I've written a version that works.
+multiline_match <- function(x, regex, fun = testthat::expect_match) {
+  lapply(seq_along(x), function(i) fun(x[[i]], regex = regex[[i]]))
+}
+
 base_regex <- "\\[\\s*%s\\-test\\-\\d{2}(:\\d{2}){2}\\] - %s"
 regexps <- list(
   info = info_regex <- sprintf(base_regex, "info", "%s"),
@@ -90,6 +96,10 @@ test_that("Testing W4MLogger base", {
     regex = sprintf(info_regex, msg)
   )
   testthat::expect_message(
+    logger$info(),
+    regex = sprintf(info_regex, "")
+  )
+  testthat::expect_message(
     logger$warning(msg),
     regex = sprintf(warning_regex, msg)
   )
@@ -136,21 +146,64 @@ test_that("Testing W4MLogger all kind of loggers", {
 })
 
 test_that("Testing W4MLogger logger outputs", {
-  regex <- paste0(
+  regex <- c(
     sprintf(info_regex, "Starting the processing of:"),
     sprintf(info_regex, "List of 3"),
     " \\$ a: int \\[1:5\\] 1 2 3 4 5",
     " \\$ b: int \\[1:6\\] 5 6 7 8 9 10",
     " \\$ c: int \\[1:7\\] 8 7 6 5 4 3 2"
   )
-  message(regex)
-  result <- gsub(
-    "\n",
-    "",
+  result <- strsplit(
     capture.output(get_logger("test")$set_info()$info(
       "Starting the processing of:", list(a = 1:5, b = 5:10, c = 8:2)
-    ), type = "message")
+    ), type = "message"),
+    "\n"
+  )[[1]]
+  multiline_match(result, regex)
+})
+
+test_that("Testing W4MLogger logger no coloring outputs", {
+  regex <- c(
+    sprintf(info_regex, "Starting the processing of:"),
+    sprintf(info_regex, "List of 3"),
+    " \\$ a: int \\[1:5\\] 1 2 3 4 5",
+    " \\$ b: int \\[1:6\\] 5 6 7 8 9 10",
+    " \\$ c: int \\[1:7\\] 8 7 6 5 4 3 2"
   )
-  message(result)
-  testthat::expect_message(message(result), regex = regex)
+  result <- strsplit(
+    capture.output(
+      W4MLogger("test", do_coloring = FALSE)
+      $set_info()
+      $info(
+        "Starting the processing of:",
+        list(a = 1:5, b = 5:10, c = 8:2)
+      ),
+      type = "message"
+    ),
+    "\n"
+  )[[1]]
+  multiline_match(result, regex)
+})
+
+test_that("Testing W4MLogger output file", {
+  regex <- c(
+    sprintf(info_regex, "Starting the processing of:"),
+    sprintf(info_regex, "List of 3"),
+    " \\$ a: int \\[1:5\\] 1 2 3 4 5",
+    " \\$ b: int \\[1:6\\] 5 6 7 8 9 10",
+    " \\$ c: int \\[1:7\\] 8 7 6 5 4 3 2"
+  )
+  paths <-  file.path(tempdir(), c("test1", "test2"))
+  capture.output(
+    W4MLogger("test", out_path = paths)
+    $set_info()
+    $info(
+      "Starting the processing of:",
+      list(a = 1:5, b = 5:10, c = 8:2)
+    ),
+    type = "message"
+  )
+  results <- lapply(paths, readLines)
+  multiline_match(results[[1]], regex)
+  multiline_match(results[[2]], regex)
 })
