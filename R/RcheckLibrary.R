@@ -52,12 +52,10 @@ match2 <- function(data_matrix, metadata, metadata_type) {
     id1 <- data_matrix[, 1]
   }
 
-  if (
-    length(which(id1 %in% id2)) != length(id1)
-   || length(which(id2 %in% id1)) != length(id2)
-  ) {
+  missing_from_id1 <- id1[!(id1 %in% id2)]
+  missing_from_id2 <- id2[!(id2 %in% id1)]
+  if (length(missing_from_id1) != 0 || length(missing_from_id2) != 0) {
     err_stock <- c(
-
       "\nData
       matrix and ",
       metadata_type,
@@ -66,8 +64,8 @@ match2 <- function(data_matrix, metadata, metadata_type) {
       metadata_type,
       " identifiers."
     )
-    if (length(which(id1 %in% id2)) != length(id1)) {
-      if (length(which(!(id1 %in% id2))) < 4) {
+    if (length(missing_from_id1) != 0) {
+      if (length(missing_from_id1) < 4) {
         err_stock <- c(err_stock, "\n    The ")
       } else {
         err_stock <- c(err_stock, "\n    For example, the ")
@@ -76,18 +74,18 @@ match2 <- function(data_matrix, metadata, metadata_type) {
         err_stock, "following identifiers found in the data matrix\n",
         "    do not appear in the ", metadata_type, " metadata file:\n"
       )
-      identif <- id1[which(!(id1 %in% id2))][
-        seq_len(min(3, length(which(!(id1 %in% id2)))))
+      missing_from_id1 <- missing_from_id1[
+        seq_len(min(3, length(missing_from_id1)))
       ]
       err_stock <- c(
         err_stock,
         "    ",
-        paste(identif, collapse = "\n    "),
+        paste(missing_from_id1, collapse = "\n    "),
         "\n"
       )
     }
-    if (length(which(id2 %in% id1)) != length(id2)) {
-      if (length(which(!(id2 %in% id1))) < 4) {
+    if (length(missing_from_id2)) {
+      if (length(missing_from_id2) < 4) {
         err_stock <- c(err_stock, "\n    The ")
       } else {
         err_stock <- c(err_stock, "\n    For example, the ")
@@ -99,13 +97,13 @@ match2 <- function(data_matrix, metadata, metadata_type) {
         " metadata file\n",
         "    do not appear in the data matrix:\n"
       )
-      identif <- id2[which(!(id2 %in% id1))][
-        seq_len(min(3, length(which(!(id2 %in% id1)))))
+      missing_from_id2 <- missing_from_id2[
+        seq_len(min(3, length(missing_from_id2)))
       ]
       err_stock <- c(
         err_stock,
         "    ",
-        paste(identif, collapse = "\n    "),
+        paste(missing_from_id2, collapse = "\n    "),
         "\n"
       )
     }
@@ -130,17 +128,19 @@ match2 <- function(data_matrix, metadata, metadata_type) {
 #' @export
 match3 <- function(data_matrix, sample_metadata, variable_metadata) {
 
-  err_stock <- NULL #' error vector
+  err_stock <- NULL
 
   id1 <- colnames(data_matrix)[-1]
   id2 <- sample_metadata[, 1]
   id3 <- data_matrix[, 1]
   id4 <- variable_metadata[, 1]
 
-  if (
-    length(which(id1 %in% id2)) != length(id1)
-    || length(which(id2 %in% id1)) != length(id2)
-  ) {
+  missing_from_id1 <- id1[!(id1 %in% id2)]
+  missing_from_id2 <- id2[!(id2 %in% id1)]
+  missing_from_id3 <- id3[!(id3 %in% id4)]
+  missing_from_id4 <- id4[!(id4 %in% id3)]
+
+  if (length(c(missing_from_id1, missing_from_id2)) != 0) {
     err_stock <- c(
       err_stock,
       paste(
@@ -148,52 +148,47 @@ match3 <- function(data_matrix, sample_metadata, variable_metadata) {
         "sample identifiers."
       )
     )
-    if (length(which(id1 %in% id2)) != length(id1)) {
-      if (length(which(!(id1 %in% id2))) < 4) {
-        err_stock <- c(err_stock, "\n    The ")
-      } else {
-        err_stock <- c(err_stock, "\n    For example, the ")
-      }
+    if (length(missing_from_id1) != 0) {
       err_stock <- c(
-        err_stock, "following identifiers found in the data matrix\n",
+        err_stock, (
+          if (length(missing_from_id1) < 4) "\n    The "
+          else "\n    For example, the "
+        ),
+        "following identifiers found in the data matrix\n",
         "    do not appear in the sample metadata file:\n"
       )
-      identif <- id1[which(!(id1 %in% id2))][
-        seq_len(min(3, length(which(!(id1 %in% id2)))))
+      missing_from_id1 <- missing_from_id1[
+        seq_len(min(3, length(missing_from_id1)))
       ]
       err_stock <- c(
         err_stock,
         "    ",
-        paste(identif, collapse = "\n    "),
+        paste(missing_from_id1, collapse = "\n    "),
         "\n"
       )
     }
-    if (length(which(id2 %in% id1)) != length(id2)) {
-      if (length(which(!(id2 %in% id1))) < 4) {
-        err_stock <- c(err_stock, "\n    The ")
-      } else {
-        err_stock <- c(err_stock, "\n    For example, the ")
-      }
+    if (length(missing_from_id2) != 0) {
       err_stock <- c(
-        err_stock, "following identifiers found in the sample metadata file\n",
+        err_stock, (
+          if (length(missing_from_id2) < 4) "\n    The "
+          else "\n    For example, the "
+        ),
+        "following identifiers found in the sample metadata file\n",
         "    do not appear in the data matrix:\n"
       )
-      identif <- id2[which(!(id2 %in% id1))][
-        seq_len(min(3, length(which(!(id2 %in% id1)))))
+      missing_from_id2 <- missing_from_id2[
+        seq_len(min(3, length(missing_from_id2)))
       ]
       err_stock <- c(
         err_stock,
         "    ",
-        paste(identif, collapse = "\n    "),
+        paste(missing_from_id2, collapse = "\n    "),
         "\n"
       )
     }
   }
 
-  if (
-    length(which(id3 %in% id4)) != length(id3)
-    || length(which(id4 %in% id3)) != length(id4)
-  ) {
+  if (length(c(missing_from_id3, missing_from_id4)) != 0) {
     err_stock <- c(
       err_stock,
       paste(
@@ -201,44 +196,41 @@ match3 <- function(data_matrix, sample_metadata, variable_metadata) {
         "variable identifiers."
       )
     )
-    if (length(which(id3 %in% id4)) != length(id3)) {
-      if (length(which(!(id3 %in% id4))) < 4) {
-        err_stock <- c(err_stock, "\n    The ")
-      } else {
-        err_stock <- c(err_stock, "\n    For example, the ")
-      }
+    if (length(missing_from_id3) != 0) {
       err_stock <- c(
-        err_stock, "following identifiers found in the data matrix\n",
+        err_stock, (
+          if (length(missing_from_id3) < 4) "\n    The "
+          else "\n    For example, the "
+        ),
+        "following identifiers found in the data matrix\n",
         "    do not appear in the variable metadata file:\n"
       )
-      identif <- id3[which(!(id3 %in% id4))][
-        seq_len(min(3, length(which(!(id3 %in% id4)))))
+      missing_from_id3 <- missing_from_id3[
+        seq_len(min(3, length(missing_from_id3)))
       ]
       err_stock <- c(
         err_stock,
         "    ",
-        paste(identif, collapse = "\n    "),
+        paste(missing_from_id3, collapse = "\n    "),
         "\n"
       )
     }
-    if (length(which(id4 %in% id3)) != length(id4)) {
-      if (length(which(!(id4 %in% id3))) < 4) {
-        err_stock <- c(err_stock, "\n    The ")
-      } else {
-        err_stock <- c(err_stock, "\n    For example, the ")
-      }
+    if (length(missing_from_id4) != 0) {
       err_stock <- c(
-        err_stock,
+        err_stock, (
+          if (length(missing_from_id4) < 4) "\n    The "
+          else "\n    For example, the "
+        ),
         "following identifiers found in the variable metadata file\n",
         "    do not appear in the data matrix:\n"
       )
-      identif <- id4[which(!(id4 %in% id3))][
-        seq_len(min(3, length(which(!(id4 %in% id3)))))
+      missing_from_id4 <- missing_from_id4[
+        seq_len(min(3, length(missing_from_id4)))
       ]
       err_stock <- c(
         err_stock,
         "    ",
-        paste(identif, collapse = "\n    "),
+        paste(missing_from_id4, collapse = "\n    "),
         "\n"
       )
     }
