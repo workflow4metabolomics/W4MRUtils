@@ -1,20 +1,30 @@
 
+#' @export
 stopf <- function(...) {
   stop(sprintf(...))
 }
 
+#' @export
 stopaste <- function(...) {
   stop(paste(...))
 }
 
+#' @export
 stopaste0 <- function(...) {
   stop(paste0(...))
 }
 
+#' @export
 printf <- function(...) {
   print(sprintf(...))
 }
 
+#' @export
+printfp <- function(x, ...) {
+  print(sprintf(do.call(paste, x), ...))
+}
+
+#' @export
 printp <- function(...) {
   print(paste(...))
 }
@@ -60,6 +70,7 @@ check_param_type_n_length <- function(
   )
 }
 
+#' @export
 check_parameter_type <- function(
   value,
   expected_type,
@@ -90,6 +101,7 @@ check_parameter_type <- function(
   }
 }
 
+#' @export
 check_parameter_length <- function(
   value,
   expected_size,
