@@ -83,6 +83,12 @@ optparse_list <- function(
         transfo <- as.numeric
       } else if (of == "integer") {
         transfo <- as.integer
+      } else if (of == "logical") {
+        transfo <- function(x) {
+          x %in% truevalues
+        }
+      } else {
+        stopf("Unknown type: %s. Cannot transform without a convertor", of)
       }
       return(lapply(strsplit(value[[1]], sep, fixed = TRUE)[[1]], transfo))
     }
@@ -95,9 +101,13 @@ optparse_parameters <- function(
   fix_hyphens = TRUE,
   fix_dots = TRUE,
   add_trailing_hyphens = TRUE,
-  args = NULL
+  args = NULL,
+  no_optparse = FALSE
 ) {
-  if (!suppressWarnings(requireNamespace("optparse", quietly = TRUE))) {
+  if (
+    !suppressWarnings(requireNamespace("optparse", quietly = TRUE))
+    || no_optparse
+  ) {
     stopaste(
       "To uses `optparse_parameters`, you need to install the",
       "\"optparse\" package or to add it to your tool's dependencies"
@@ -126,7 +136,9 @@ optparse_parameters <- function(
     parser <- do.call(optparse$add_option, definition)
   }
   if (!is.null(args)) {
-    return(optparse$parse_args(parser, args = args))
+    result <- optparse$parse_args(parser, args = args)
+  } else {
+    result <- optparse$parse_args(parser)
   }
-  return(optparse$parse_args(parser))
+  return(result)
 }
