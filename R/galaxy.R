@@ -10,10 +10,27 @@ run_galaxy_processing <- function(
   code,
   tool_version = "unknown",
   unmangle_parameters = TRUE,
-  args = NULL
+  args = NULL,
+  logger = NULL,
+  source_files = c(),
+  env = NULL
 ) {
-  logger <- get_logger(tool_name)
-  args <- suppressWarnings(parse_args(args = args)) # nolint:object_usage_linter
+  if (is.null(logger)) {
+    logger <- get_logger(tool_name)
+  }
+  if (is.null(env)) {
+    env <- new.env()
+  }
+  if (is.null(args)) {
+    args <- suppressWarnings(parse_args(args = args)) # nolint:object_usage_linter
+  }
+  check_param_type_n_length(tool_name, "character")
+  check_param_type_n_length(tool_version, "character")
+  check_param_type_n_length(unmangle_parameters, "logical")
+  check_parameter_type(args, "list")
+  check_param_type_n_length(logger, "W4MLogger")
+  check_parameter_type(source_files, "character", or_null = TRUE)
+  check_parameter_type(env, "environment")
   if (in_galaxy_env()) {
     if (unmangle_parameters) {
       args <- unmangle_galaxy_param(args)
@@ -173,6 +190,7 @@ in_galaxy_env <- function() {
 
 #' @export
 unmangle_galaxy_param <- function(args) {
+  check_parameter_type(args, "list")
   for (param in names(args)) {
     value <- args[[param]]
     if (is.character(value)) {
@@ -206,8 +224,7 @@ mapped_chars__ <- list(
 mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
 
 unmangle_galaxy_string <- function(string) {
-  ## taken from lib/galaxy/util/__init__.py:mapped_chars
-
+  check_param_type_n_length(string, "character")
   if (! any(grepl(
     mapped_chars_regex__,
     string,
