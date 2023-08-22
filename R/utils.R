@@ -76,7 +76,8 @@ check_parameter_type <- function(
   expected_type,
   nth = NULL,
   func_name = NULL,
-  param_name = NULL
+  param_name = NULL,
+  or_null = FALSE
 ) {
   if (is.null(param_name)) {
     param_name <- deparse(substitute(value))
@@ -89,7 +90,7 @@ check_parameter_type <- function(
   } else {
     nth <- ""
   }
-  if (!is(value, expected_type)) {
+  if (!is(value, expected_type) && !(or_null && is.null(value))) {
     stopf(
       "The '%s'%s parameter for %s must be a %s, not a %s.",
       param_name,

@@ -4,6 +4,42 @@
 #'
 NULL
 
+
+## taken from lib/galaxy/util/__init__.py:mapped_chars
+
+mapped_chars__ <- list(
+  `>` = "__gt__",
+  `<` = "__lt__",
+  `'` = "__sq__",
+  '\"' = "__dq__",
+  `[` = "__ob__",
+  `]` = "__cb__",
+  `{` = "__oc__",
+  `}` = "__cc__",
+  `@` = "__at__",
+  `\n` = "__cn__",
+  `\r` = "__cr__",
+  `\t` = "__tc__",
+  `#` = "__pd__"
+)
+
+mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
+
+
+#' @export
+run_galaxy_function <- function(tool_name, func, ...) {
+  check_param_type_n_length(tool_name, "character")
+  check_param_type_n_length(func, "function")
+  env <- new.env()
+  env$func <- func
+  return(run_galaxy_processing(
+    tool_name,
+    func(args, logger), ## nolint
+    env = env,
+    ...
+  ))
+}
+
 #' @export
 run_galaxy_processing <- function(
   tool_name,
@@ -42,11 +78,13 @@ run_galaxy_processing <- function(
       logger = logger
     )
   }
-  env <- new.env()
   env$args <- args
   env$logger <- logger
   in_error <- FALSE
   result <- tryCatch({
+      for (file in source_files) {
+        source_local(file)
+      }
       eval(rlang::enexpr(code), env)
     },
     error = function(error) {
@@ -70,7 +108,7 @@ run_galaxy_processing <- function(
       tool_version
     )
   }
-  return(result)
+  return(invisible(result))
 }
 
 #' @export
@@ -205,24 +243,7 @@ unmangle_galaxy_param <- function(args) {
   return(args)
 }
 
-mapped_chars__ <- list(
-  `>` = "__gt__",
-  `<` = "__lt__",
-  `'` = "__sq__",
-  '\"' = "__dq__",
-  `[` = "__ob__",
-  `]` = "__cb__",
-  `{` = "__oc__",
-  `}` = "__cc__",
-  `@` = "__at__",
-  `\n` = "__cn__",
-  `\r` = "__cr__",
-  `\t` = "__tc__",
-  `#` = "__pd__"
-)
-
-mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
-
+#' @export
 unmangle_galaxy_string <- function(string) {
   check_param_type_n_length(string, "character")
   if (! any(grepl(
