@@ -1,4 +1,18 @@
 
+
+#' optparse_flag - define a command parameter as a trigger
+#' @description
+#' To be used with \code{optparse_parameters}. This function tells
+#' the provided parameter is a trigger (logical - TRUE/FALSE).
+#' When the trigger parameter is not provided in the command line,
+#' the value is FALSE. Otherwise, it is TRUE.
+#' @examples
+#'
+#' str(optparse_parameters(
+#'   a_parameter = optparse_flag(),
+#'   args = list("--a-parameter")
+#' ))
+#'
 #' @export
 optparse_flag <- function(
   help = "No documentation yet.",
@@ -13,6 +27,17 @@ optparse_flag <- function(
   ))
 }
 
+#' optparse_numeric - define a command parameter as an numeric
+#' @description
+#' To be used with \code{optparse_parameters}. This function tells
+#' the provided parameter is to be parsed as an numeric.
+#' @examples
+#'
+#' str(optparse_parameters(
+#'   a_parameter = optparse_numeric(),
+#'   args = list("--a-parameter", "42.72")
+#' ))
+#'
 #' @export
 optparse_numeric <- function(
   help = "No documentation yet.",
@@ -29,6 +54,17 @@ optparse_numeric <- function(
   ))
 }
 
+#' optparse_integer - define a command parameter as an integer
+#' @description
+#' To be used with \code{optparse_parameters}. This function tells
+#' the provided parameter is to be parsed as an integer.
+#' @examples
+#'
+#' str(optparse_parameters(
+#'   a_parameter = optparse_integer(),
+#'   args = list("--a-parameter", "42")
+#' ))
+#'
 #' @export
 optparse_integer <- function(
   help = "No documentation yet.",
@@ -45,6 +81,17 @@ optparse_integer <- function(
   ))
 }
 
+#' optparse_character - define a command parameter as string
+#' @description
+#' To be used with \code{optparse_parameters}. This function tells
+#' the provided parameter is to be parsed as a single string.
+#' @examples
+#'
+#' str(optparse_parameters(
+#'   a_parameter = optparse_character(),
+#'   args = list("--a-parameter", "42")
+#' ))
+#'
 #' @export
 optparse_character <- function(
   help = "No documentation yet.",
@@ -61,13 +108,34 @@ optparse_character <- function(
   ))
 }
 
+#' optparse_list - define a command parameter as a list of objects
+#' @description
+#' To be used with \code{optparse_parameters}. This function tells
+#' the provided parameter is to be parsed as a list of objects.
+#' The \code{of} parameter tells what type are elements of the list.
+#' Each element must be separated by a separator. This separator must
+#' be the value given in the \code{sep} parameter
+#' @examples
+#'
+#' str(optparse_parameters(
+#'   a_parameter = optparse_list(of="numeric"),
+#'   b_parameter = optparse_list(of="integer"),
+#'   c_parameter = optparse_list(of="logical"),
+#'   args = list(
+#'     "--a-parameter", "42.7,72.5",
+#'     "--b-parameter", "42.7,72.5",
+#'     "--c-parameter", "TRUE,FALSE,FALSE,TRUE"
+#'   )
+#' ))
+#'
 #' @export
 optparse_list <- function(
   help = "No documentation yet.",
   short = NULL,
   default = "",
   of = "character",
-  sep = ","
+  sep = ",",
+  truevalues = c("TRUE", "true", "1", "t", "T")
 ) {
   return(list(
     opt_str = short,
@@ -94,7 +162,49 @@ optparse_list <- function(
     }
   ))
 }
-
+#' optparse_parameters - parse easily the command line parameters
+#'
+#' @description
+#' This function is made to be used with the functions optparse_flag,
+#' optparse_numeric, optparse_integer, optparse_character and/or
+#' optparse_list
+#'
+#' \code{optparse_parameters} parses arguments based on its parameters.
+#'
+#' You just have to call \code{optparse_parameters} with named arguments.
+#' Each parameter is the result of either optparse_flag, optparse_numeric,
+#' optparse_integer, optparse_character or optparse_list
+#'
+#' @examples
+#'
+#' args <- optparse_parameters(
+#'   a_integer = optparse_integer(),
+#'   a_float = optparse_numeric(),
+#'   a_boolean = optparse_flag(),
+#'   a_character = optparse_character(),
+#'   a_list = optparse_list(of = "numeric"),
+#'   a_char_list = optparse_list(of = "character"),
+#'   a_int_list = optparse_list(of = "integer"),
+#'   args = list(
+#'     "--a-integer",
+#'     "42",
+#'     "--a-float",
+#'     "3.14",
+#'     "--a-boolean",
+#'     "FALSE",
+#'     "--a-character",
+#'     "FALSE",
+#'     "--a-list",
+#'     "1.5,2,3",
+#'     "--a-char-list",
+#'     "1.5,2,3",
+#'     "--a-int-list",
+#'     "1.5,2,3"
+#'   )
+#' )
+#'
+#' str(args)
+#'
 #' @export
 optparse_parameters <- function(
   ...,
