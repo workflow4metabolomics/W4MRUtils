@@ -3,15 +3,13 @@
 
 
 test_that("Testing galaxy run process", {
-  capture.output(
+  capture.output({
     testthat::expect_null(
       run_galaxy_processing(
         "test-tool",
         NULL
       )
     )
-  )
-  capture.output(
     testthat::expect_error(
       run_galaxy_processing(
         "test-tool",
@@ -20,7 +18,7 @@ test_that("Testing galaxy run process", {
       "The tool test-tool - version unknown ended in error.",
       fixed = TRUE
     )
-  )
+  }, type = "message")
 })
 
 test_that("Testing galaxy run process provides some variables", {
@@ -90,22 +88,38 @@ test_that("Testing galaxy run process", {
   capture.output(
     args <- run_galaxy_processing(
       "test-tool",
-      args,
+      code = args,
       args = list(
-        "--args",
-        "a-integer",
-        "42",
-        "a-float",
-        "3.14",
-        "a-boolean",
-        "FALSE",
-        "a-list",
-        "1,2,3",
-        "a-__ob__mangled_param__cb____at__domain",
-        "__lt__3"
+        "a-integer" = "42",
+        "a-float" = "3.14",
+        "a-boolean" = "FALSE",
+        "a-list" = "1,2,3",
+        "a-__ob__mangled_param__cb____at__domain" = "__lt__3"
       )
     ),
     type = "message"
+  )
+  Sys.unsetenv("_GALAXY_JOB_HOME_DIR")
+  testthat::expect_equal(
+    args[["a-[mangled_param]@domain"]],
+    "<3" ## kawaii
+  )
+})
+
+test_that("Testing galaxy run function", {
+  Sys.setenv(`_GALAXY_JOB_HOME_DIR` = 1)
+  capture.output(
+    args <- run_galaxy_function(
+      "test-tool",
+      func = function(args, logger) args,
+      args = list(
+        "a-integer" = "42",
+        "a-float" = "3.14",
+        "a-boolean" = "FALSE",
+        "a-list" = "1,2,3",
+        "a-__ob__mangled_param__cb____at__domain" = "__lt__3"
+      )
+    ), type = "message"
   )
   Sys.unsetenv("_GALAXY_JOB_HOME_DIR")
   testthat::expect_equal(
