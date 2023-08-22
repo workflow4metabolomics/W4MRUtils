@@ -232,11 +232,33 @@ W4MLogger$methods(initialize = function(
   .self$set_debug(value = show_debug)
   .self$set_verbose(value = show_verbose)
   if (!is.null(out_path)) {
-    .self$out_file <- lapply(
-      out_path,
-      function(x) file(x, open = "a")
-    )
+    .self$set_out_paths(out_path)
   }
+})
+
+#' @name W4MLogger_set_out_paths
+#' @title Defines in which file logs are duplicated
+#' @description
+#' W4MLogger can output logs in file. This function tells in which file
+#' to put logs.
+NULL
+W4MLogger$methods(set_out_paths = function(out_paths) {
+  .self$out_file <- list()
+  .self$add_out_paths(out_paths)
+  return(.self)
+})
+
+#' @name W4MLogger_add_out_paths
+#' @title Adds a file where logs are duplicated
+#' @description
+#' W4MLogger can output logs in file. This function adds a file in which
+#' to put logs.
+NULL
+W4MLogger$methods(add_out_paths = function(out_paths) {
+  for (path in out_paths) {
+    .self$out_file[[length(.self$out_file) + 1]] <- file(path, open = "a")
+  }
+  return(.self)
 })
 
 #' This method activate or deactivate the logging of debugs messages
@@ -355,7 +377,7 @@ W4MLogger$methods(.internal_error__ = function(message) {
 #'
 #' @param level is a string. By default its value should be either "info",
 #' "debug", "warning", "debug", "verbose" or "INTERNAL".
-#' But, it the logger was build with a different color naming, one of
+#' But, if the logger was build with a different color naming, one of
 #' the names provided in the "coloring" \code{named list} parameter must be
 #' used, as it determines the color to use.
 #'
@@ -444,6 +466,14 @@ W4MLogger$methods(.get_formated__ = function(level, message) {
 })
 
 
+#' @title W4MLogger_finalize
+#' @name W4MLogger_finalize
+#' @description
+#' The function W4MLogger$finalize is the destructor function of this
+#' class. It closes every files that was opened by the logger, or that
+#' was provided during execution. It has to be considered internal.
+#'
+NULL
 W4MLogger$methods(finalize = function() {
   for (file in .self$out_file) {
     if (!is.null(file) && isOpen(file)) {
