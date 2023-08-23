@@ -63,7 +63,7 @@ df_force_numeric <- function(df, cols = NULL) {
     } else {
       # Convert only the specified columns
       for (c in cols) {
-        df[[c]] <- as.numeric(df[[c]])
+        df[, c] <- as.numeric(df[, c])
       }
     }
   }

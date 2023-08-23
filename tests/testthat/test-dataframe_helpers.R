@@ -20,7 +20,6 @@ write_read_df <- function(
   ))
 }
 
-
 test_that("Testing df_is", {
   testthat::expect_true(df_is(data.frame(a = c(1)), "numeric"))
   testthat::expect_false(df_is(data.frame(a = c(1)), "character"))

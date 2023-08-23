@@ -1,9 +1,4 @@
 
-# Making sure testthat just shut the f*** up
-praise <- function() character(0)
-encourage <- function() character(0)
-praise_emoji <- function() character(0)
-
 ## Multiline match is just completely f***** up
 ## so, I've written a version that works.
 multiline_match <- function(x, regex, fun = testthat::expect_match) {

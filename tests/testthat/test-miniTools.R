@@ -1,27 +1,28 @@
 
-build_fake_r_file <- function() {
-  path <- tempfile(fileext = ".R")
+build_fake_r_file <- function(path = NULL) {
+  if (is.null(path)) {
+    path <- tempfile(fileext = ".R")
+  }
   file.create(path)
-  writeLines(c(
-    "setup_logger <- function(args, logger) {",
-    "  if (!is.null(args$verbose) && args$verbose) {",
-    "    logger$set_verbose(TRUE)",
-    "  }",
-    "  if (!is.null(args$debug) && args$debug) {",
-    "    logger$set_debug(TRUE)",
-    "  }",
-    "  if (!is.null(args$logs)) {",
-    "    logger$add_out_paths(args$logs)",
-    "  }",
-    "}",
-    "processing <- function(args, logger) {",
-    "  logger$info(\"The tool is working...\")",
-    "  Sys.sleep(1)",
-    "  logger$infof(\"Input: %s.\", args$input)",
-    "  logger$info(\"The tool stoping.\")",
-    "  return(NULL)",
-    "}"
-    ), con = path
+  writeLines("
+    setup_logger <- function(args, logger) {
+      if (!is.null(args$verbose) && args$verbose) {
+        logger$set_verbose(TRUE)
+      }
+      if (!is.null(args$debug) && args$debug) {
+        logger$set_debug(TRUE)
+      }
+      if (!is.null(args$logs)) {
+        logger$add_out_paths(args$logs)
+      }
+    }
+    processing <- function(args, logger) {
+      logger$info(\"The tool is working...\")
+      Sys.sleep(1)
+      logger$infof(\"Input: %s.\", args$input)
+      logger$info(\"The tool stoping.\")
+      return(NULL)
+    }", con = path
   )
   return(path)
 }
@@ -34,7 +35,17 @@ test_that("Testing source_local", {
 
 test_that("Testing source_local with env", {
   env <- new.env()
-  testthat::expect_no_error(source_local(build_fake_r_file(), env = env))
+  path <- build_fake_r_file()
+  testthat::expect_no_error(source_local(path, env = env))
+  file.remove(path)
+  testthat::expect_no_error(env$processing)
+
+  env <- new.env()
+  path <- "./test.R"
+  testthat::expect_no_error(
+    source_local(build_fake_r_file(path), env = env)
+  )
+  file.remove(path)
   testthat::expect_no_error(env$processing)
 })
 
