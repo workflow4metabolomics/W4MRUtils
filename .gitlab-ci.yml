@@ -16,7 +16,7 @@ Build docker image:
   stage:
     build
   tags:
-    - shell-sauron
+    -  ara-unh-sauron-shell
   script:
     - last_image() { docker image ls --format "{{.Tag}}" $DOCKER_IMAGE | grep -Po '\d+'; }
     - echo "==================================";
@@ -34,13 +34,13 @@ Build docker image:
 
 checking:
   needs: ["Build docker image"]
-  image: $DOCKER_IMAGE
   stage: check
+  image: $DOCKER_IMAGE
   allow_failure: true
   script:
     - R -q -e "devtools::check('$CI_PROJECT_DIR')"
   tags:
-    - docker-sauron
+    -  ara-unh-sauron-shell
 
 # To have the coverage percentage appear as a gitlab badge follow these
 # instructions:
@@ -51,12 +51,12 @@ checking:
 testing:
   needs: [checking]
   stage: test
-  image: $DOCKER_IMAGE
-  allow_failure: true
-  when: on_success
   only:
     - dev
     - main
+  image: $DOCKER_IMAGE
+  allow_failure: true
+  when: on_success
   script:
     - R -q -e "devtools::test('$CI_PROJECT_DIR')"
     - R -q -e "covr::gitlab(quiet = FALSE)"
@@ -64,7 +64,7 @@ testing:
     paths:
       - public
   tags:
-    - docker-sauron
+    -  ara-unh-sauron-docker
   coverage:
     '/ Coverage: \d+\.\d+/'
 
@@ -74,6 +74,8 @@ testing:
 pages:
   needs: [testing]
   stage: deploy
+  only:
+    - main
   image: $DOCKER_IMAGE
   dependencies:
     - testing
@@ -83,21 +85,19 @@ pages:
     paths:
       - public
     expire_in: 30 days
-  only:
-    - main
   tags:
-    - docker-sauron
+    - ara-unh-sauron-docker
 
 building conda recipe:
+  stage:
+    build
+  only:
+    - main
   allow_failure:
     true
   image:
     quay.io/condaforge/linux-anvil-cos7-x86_64
-  only:
-    - main
-  stage:
-    build
   script:
     - conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
   tags:
-    - docker-sauron
+    - ara-unh-sauron-docker
