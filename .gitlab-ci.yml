@@ -29,8 +29,6 @@ code quality check:
       elif [ $ratio -lt 75 ];then
         echo "Attention, the [documentation / code] ratio is very low" ;
       fi
-  code_ratio:
-    'code ratio = \d+'
 
 Build docker image:
   stage:
