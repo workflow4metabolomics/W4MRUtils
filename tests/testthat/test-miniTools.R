@@ -1,6 +1,41 @@
 
+build_fake_r_file <- function() {
+  path <- tempfile(fileext = ".R")
+  file.create(path)
+  writeLines(c(
+    "setup_logger <- function(args, logger) {",
+    "  if (!is.null(args$verbose) && args$verbose) {",
+    "    logger$set_verbose(TRUE)",
+    "  }",
+    "  if (!is.null(args$debug) && args$debug) {",
+    "    logger$set_debug(TRUE)",
+    "  }",
+    "  if (!is.null(args$logs)) {",
+    "    logger$add_out_paths(args$logs)",
+    "  }",
+    "}",
+    "processing <- function(args, logger) {",
+    "  logger$info(\"The tool is working...\")",
+    "  Sys.sleep(1)",
+    "  logger$infof(\"Input: %s.\", args$input)",
+    "  logger$info(\"The tool stoping.\")",
+    "  return(NULL)",
+    "}"
+    ), con = path
+  )
+  return(path)
+}
+
 test_that("Testing source_local", {
-  testthat::expect_warning(source_local("/tmp/test.R"), regex = NA)
+  testthat::expect_warning(
+    testthat::expect_error(source_local("/tmp/test.R"))
+  )
+})
+
+test_that("Testing source_local with env", {
+  env <- new.env()
+  testthat::expect_no_error(source_local(build_fake_r_file(), env = env))
+  testthat::expect_no_error(env$processing)
 })
 
 test_that("Testing shy_lib", {

@@ -28,10 +28,17 @@ NULL
 #'    W4MRUtils::source_local("example.R", "RcheckLibrary.R")
 #' }
 #' @export
-source_local <- function(...) {
+source_local <- function(..., env = FALSE) {
   argv <- commandArgs(trailingOnly = FALSE)
   base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
-  return(lapply(file.path(base_dir, c(...)), source))
+  if (is.null(base_dir) || length(base_dir) == 0) {
+    base_dir <- "/"
+  }
+  do_source <- function(...) {
+    base::source(..., local = env)
+  }
+  result <- lapply(file.path(base_dir, c(...)), do_source)
+  return(result)
 }
 
 #' @title Shy Lib

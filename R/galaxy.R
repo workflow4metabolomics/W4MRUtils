@@ -81,10 +81,11 @@ run_galaxy_processing <- function(
   env$args <- args
   env$logger <- logger
   in_error <- FALSE
+  for (file in source_files) {
+    logger$infof("Sourcing %s...", file)
+    source_local(file, env = env)
+  }
   result <- tryCatch({
-      for (file in source_files) {
-        source_local(file)
-      }
       eval(rlang::enexpr(code), env)
     },
     error = function(error) {
