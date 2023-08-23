@@ -12,6 +12,26 @@ stages:
   - test
   - deploy
 
+code quality check:
+  stage:
+    build
+  tags:
+    -  ara-unh-sauron-shell
+  script:
+    - |
+      doc_count=$(grep -P "^#'" R/*.R | wc -l) ;
+      sloc_count=$(grep -P '^\s*[^#]{2,}' R/*.R | wc -l) ;
+      ratio=$(bc <<< "scale=2;$doc_count/$sloc_count*100" | cut -d. -f1) ;
+      echo "[documentation / code ratio = $ratio]"
+      if [ $ratio -lt 70 ];then
+        echo "Not enough documentation." ;
+        exit 1 ;
+      elif [ $ratio -lt 75 ];then
+        echo "Attention, the [documentation / code] ratio is very low" ;
+      fi
+  code_ratio:
+    'code ratio = \d+'
+
 Build docker image:
   stage:
     build
@@ -41,7 +61,6 @@ checking:
     - R -q -e "devtools::check('$CI_PROJECT_DIR')"
   tags:
     -  ara-unh-sauron-shell
-
 # To have the coverage percentage appear as a gitlab badge follow these
 # instructions:
 # https://docs.gitlab.com/ee/user/project/pipelines/settings.html#test-coverage-parsing
