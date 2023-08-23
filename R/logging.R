@@ -83,6 +83,7 @@ w4m_loggers__ <- new.env()
 #' write_logger$set_debug()
 #' write_logger$debug("The debug outputs are now visible!")
 #'
+#' @author L.Pavot
 #' @export
 get_logger <- function(name, recreate = FALSE, ...) {
   check_param_type_n_length(name, "character", nth = "first")
@@ -136,6 +137,7 @@ get_logger <- function(name, recreate = FALSE, ...) {
 #' @seealso [W4MLogger$info], [W4MLogger$warning], [W4MLogger$error],
 #' [W4MLogger$debug], [W4MLogger$verbose]
 #'
+#' @author L.Pavot
 #' @export W4MLogger
 NULL
 W4MLogger <- setRefClass( ## nolint - This is a class name
@@ -185,6 +187,7 @@ W4MLogger <- setRefClass( ## nolint - This is a class name
 #' when needed.
 #'
 #' See [get_logger] for example usages.
+#' @author L.Pavot
 NULL
 W4MLogger$methods(initialize = function(
   name,

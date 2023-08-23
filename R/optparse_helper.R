@@ -13,6 +13,7 @@
 #'   args = list("--a-parameter")
 #' ))
 #'
+#' @author L.Pavot
 #' @export
 optparse_flag <- function(
   help = "No documentation yet.",
@@ -38,6 +39,7 @@ optparse_flag <- function(
 #'   args = list("--a-parameter", "42.72")
 #' ))
 #'
+#' @author L.Pavot
 #' @export
 optparse_numeric <- function(
   help = "No documentation yet.",
@@ -65,6 +67,7 @@ optparse_numeric <- function(
 #'   args = list("--a-parameter", "42")
 #' ))
 #'
+#' @author L.Pavot
 #' @export
 optparse_integer <- function(
   help = "No documentation yet.",
@@ -92,6 +95,7 @@ optparse_integer <- function(
 #'   args = list("--a-parameter", "42")
 #' ))
 #'
+#' @author L.Pavot
 #' @export
 optparse_character <- function(
   help = "No documentation yet.",
@@ -128,6 +132,7 @@ optparse_character <- function(
 #'   )
 #' ))
 #'
+#' @author L.Pavot
 #' @export
 optparse_list <- function(
   help = "No documentation yet.",
@@ -205,6 +210,7 @@ optparse_list <- function(
 #'
 #' str(args)
 #'
+#' @author L.Pavot
 #' @export
 optparse_parameters <- function(
   ...,

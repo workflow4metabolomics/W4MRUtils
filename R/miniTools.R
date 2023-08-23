@@ -14,31 +14,99 @@
 #'
 NULL
 
-#' @title source local
+#' @title source local - source file, from absolute or relative path
 #'
 #' @description source_local
-#' Transforms a path to be relative to the main script, and sources the path.
+#' Transforms a relative path to an absolute one, and sources the path.
 #' This helps source files located relatively to the main script without
 #' the need to know from where it was run.
 #' @param ... paths, character vector of file paths to source
+#' @param env an environement in which to source the paths
+#' @param do_print a logical, telling whether to print sourced paths or
+#'   not
 #' @return a vector resulting from the sourcing of the files provided.
 #'
 #' @examples
-#' \donttest{
-#'    W4MRUtils::source_local("example.R", "RcheckLibrary.R")
+#' ## let's say we have some R file with the following content:
+#' file_1_content <- "
+#'   setup_logger <- function(args, logger) {
+#'     if (!is.null(args$verbose) && args$verbose) {
+#'       logger$set_verbose(TRUE)
+#'     }
+#'     if (!is.null(args$debug) && args$debug) {
+#'       logger$set_debug(TRUE)
+#'     }
+#'     if (!is.null(args$logs)) {
+#'       logger$add_out_paths(args$logs)
+#'     }
+#'   }"
+#' file_2_content <- "
+#'   processing <- function(args, logger) {
+#'     logger$info(\"The tool is working...\")
+#'     logger$infof(
+#'       \"Parameters: %s\",
+#'       paste(capture.output(str(args)), collapse = \"\n\")
+#'     )
+#'     logger$info(\"The tool ended fine.\")
+#'     return(invisible(NULL))
+#'   }"
+#'
+#' if(!file.create(temp_path <- tempfile(fileext = ".R"))) {
+#'   stop("This documentation is not terminated doe to unknown error")
 #' }
+#' writeLines(file_1_content, con = temp_path)
+#'
+#' local_path = "test-local-path.R"
+#' local_full_path = file.path(get_base_dir(), local_path)
+#' if(!file.create(local_full_path)) {
+#'   stop("This documentation is not terminated doe to unknown error")
+#' }
+#' writeLines(file_2_content, con = local_full_path)
+#'
+#' ## now when we source them, the absolute path is sourced, and the
+#' ## relative file path is sourced too.
+#' W4MRUtils::source_local(c(temp_path, local_path), do_print = TRUE)
+#' file.remove(local_full_path)
+#'
+#' ## the function is accessible here
+#' processing(list(), get_logger("Tool Name"))
+#'
 #' @export
-source_local <- function(..., env = FALSE) {
+source_local <- function(..., env = FALSE, do_print = FALSE) {
+  do_source <- function(path) {
+    if (do_print) {
+      printf("Sourcing %s", path)
+    }
+    base::source(path, local = env)
+  }
+  base_dir <- get_base_dir()
+  files <- c(...)
+  absolute_filter <- grepl("^/", files, perl = TRUE)
+  non_absolutes <- file.path(base_dir, files[!absolute_filter])
+  result <- lapply(
+    c(files[absolute_filter], non_absolutes),
+    do_source
+  )
+  return(invisible(result))
+}
+
+#' @title get_base_dir - to get... the base directory
+#'
+#' @description get_base_dir
+#' @return the directory path of the main script. PWD otherwise.
+#'
+#' @examples
+#' @export
+get_base_dir <- function() {
   argv <- commandArgs(trailingOnly = FALSE)
-  base_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
-  if (is.null(base_dir) || length(base_dir) == 0) {
-    base_dir <- "/"
+  base_dir <- dirname(substring(argv[grep("^--file=", argv, perl = TRUE)], 8))
+  if (is.null(base_dir) || length(base_dir) == 0 || base_dir == ".") {
+    base_dir <- dirname(argv[grep("^-f$", argv, perl = TRUE) + 1])
   }
-  do_source <- function(...) {
-    base::source(..., local = env)
+  if (is.null(base_dir) || length(base_dir) == 0 || base_dir == ".") {
+    base_dir <- getwd()
   }
-  result <- lapply(file.path(base_dir, c(...)), do_source)
-  return(result)
+  return(base_dir)
 }
 
 #' @title Shy Lib
@@ -100,8 +168,19 @@ shy_lib <- function(...) {
 #'
 #' @author L.Pavot
 #' @examples
-#' parameters <- W4MRUtils::parse_args()
-#' print(parameters$`some-parameter`)
+#' ## faking command line parameters:
+#'
+#' commandArgs <- function() {
+#'   list(
+#'     "--args",
+#'     "param1", "a value",
+#'     "param2", "42"
+#'   )
+#' }
+#'
+#' ## extracting command line parameters:
+#' parameters <- W4MRUtils::parse_args(args = commandArgs())
+#' str(parameters)
 #'
 #' @export
 parse_args <- function(

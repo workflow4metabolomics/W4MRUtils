@@ -39,6 +39,7 @@ collapse_lines <- function(..., sep = "\n") {
   paste0(..., collapse = sep, sep = "")
 }
 
+#' @author L.Pavot
 #' @export
 check_param_type_n_length <- function(
   value,
@@ -70,6 +71,7 @@ check_param_type_n_length <- function(
   )
 }
 
+#' @author L.Pavot
 #' @export
 check_parameter_type <- function(
   value,
@@ -102,6 +104,7 @@ check_parameter_type <- function(
   }
 }
 
+#' @author L.Pavot
 #' @export
 check_parameter_length <- function(
   value,

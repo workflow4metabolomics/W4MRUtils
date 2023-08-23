@@ -40,8 +40,19 @@ args$`some-list` <- as.numeric(strsplit(args$`some-list`, ",")[[1]])
 }\if{html}{\out{</div>}}
 }
 \examples{
-parameters <- W4MRUtils::parse_args()
-print(parameters$`some-parameter`)
+## faking command line parameters:
+
+commandArgs <- function() {
+  list(
+    "--args",
+    "param1", "a value",
+    "param2", "42"
+  )
+}
+
+## extracting command line parameters:
+parameters <- W4MRUtils::parse_args(args = commandArgs())
+str(parameters)
 
 }
 \author{

@@ -4,7 +4,7 @@
 \alias{source_local}
 \title{source local}
 \usage{
-source_local(...)
+source_local(..., env = FALSE, do_print = FALSE, base_dir = NULL)
 }
 \arguments{
 \item{...}{paths, character vector of file paths to source}
@@ -19,7 +19,46 @@ This helps source files located relatively to the main script without
 the need to know from where it was run.
 }
 \examples{
-\donttest{
-   W4MRUtils::source_local("example.R", "RcheckLibrary.R")
+## let's say we have a R file with the following content:
+temp_path <- tempfile(fileext = ".R")
+if(!file.create(temp_path)) {
+  stop("This documentation is unterminated doe to unknown error")
 }
+writeLines("
+  setup_logger <- function(args, logger) {
+    if (!is.null(args$verbose) && args$verbose) {
+      logger$set_verbose(TRUE)
+    }
+    if (!is.null(args$debug) && args$debug) {
+      logger$set_debug(TRUE)
+    }
+    if (!is.null(args$logs)) {
+      logger$add_out_paths(args$logs)
+    }
+  }", con = temp_path
+)
+local_path = "./test-local-path.R"
+local_full_path = file.path(get_base_dir(), "test-local-path.R")
+print(local_path)
+if(!file.create(local_path)) {
+  stop("This documentation is unterminated doe to unknown error")
+}
+writeLines("
+  processing <- function(args, logger) {
+    logger$info(\"The tool is working...\")
+    logger$infof(
+      \"Parameters: \%s\",
+      paste(capture.output(str(args)), collapse = \"\n\")
+    )
+    logger$info(\"The tool ended fine.\")
+    return(invisible(NULL))
+  }", con = local_path
+)
+
+W4MRUtils::source_local(c(temp_path, local_path), do_print = TRUE)
+file.remove(local_path)
+
+## the function is accessible here
+processing(list(), get_logger("Tool Name"))
+
 }
