@@ -33,6 +33,12 @@ or
 > devtools::install(".", dependencies = FALSE, repos = NULL, type = "source")
 ```
 
+or
+
+``` bash
+$ R -q -e "install.packages('W4MRUtils', repos='https://cran.irsn.fr');"
+```
+
 ## Uninstallation
 
 You can uninstall the version of W4MRUtils you installed with:
