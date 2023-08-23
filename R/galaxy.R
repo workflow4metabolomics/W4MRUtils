@@ -125,7 +125,7 @@ show_galaxy_header <- function(
   if (is.null(args)) {
     args <- commandArgs()
   }
-  sep <- collapse(rep("-", 68))
+  sep <- collapse(rep("-", 78))
   gx_header <- ""
   if (show_start_time) {
     gx_header <- sprintf(
@@ -175,6 +175,7 @@ show_galaxy_footer <- function(
     tool_name,
     as.character(Sys.time())
   )
+  add(collapse(rep("-", 78)))
   add()
   sessioninfo <- sessionInfo()
   add(sessioninfo$R.version$version.string)
