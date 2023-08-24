@@ -2,29 +2,30 @@
 % Please edit documentation in R/miniTools.R
 \name{source_local}
 \alias{source_local}
-\title{source local}
+\title{source local - source file, from absolute or relative path}
 \usage{
-source_local(..., env = FALSE, do_print = FALSE, base_dir = NULL)
+source_local(..., env = FALSE, do_print = FALSE)
 }
 \arguments{
 \item{...}{paths, character vector of file paths to source}
+
+\item{env}{an environement in which to source the paths}
+
+\item{do_print}{a logical, telling whether to print sourced paths or
+not}
 }
 \value{
 a vector resulting from the sourcing of the files provided.
 }
 \description{
 source_local
-Transforms a path to be relative to the main script, and sources the path.
+Transforms a relative path to an absolute one, and sources the path.
 This helps source files located relatively to the main script without
 the need to know from where it was run.
 }
 \examples{
-## let's say we have a R file with the following content:
-temp_path <- tempfile(fileext = ".R")
-if(!file.create(temp_path)) {
-  stop("This documentation is unterminated doe to unknown error")
-}
-writeLines("
+## let's say we have some R file with the following content:
+file_1_content <- "
   setup_logger <- function(args, logger) {
     if (!is.null(args$verbose) && args$verbose) {
       logger$set_verbose(TRUE)
@@ -35,15 +36,8 @@ writeLines("
     if (!is.null(args$logs)) {
       logger$add_out_paths(args$logs)
     }
-  }", con = temp_path
-)
-local_path = "./test-local-path.R"
-local_full_path = file.path(get_base_dir(), "test-local-path.R")
-print(local_path)
-if(!file.create(local_path)) {
-  stop("This documentation is unterminated doe to unknown error")
-}
-writeLines("
+  }"
+file_2_content <- "
   processing <- function(args, logger) {
     logger$info(\"The tool is working...\")
     logger$infof(
@@ -52,11 +46,24 @@ writeLines("
     )
     logger$info(\"The tool ended fine.\")
     return(invisible(NULL))
-  }", con = local_path
-)
+  }"
 
+if(!file.create(temp_path <- tempfile(fileext = ".R"))) {
+  stop("This documentation is not terminated doe to unknown error")
+}
+writeLines(file_1_content, con = temp_path)
+
+local_path = "test-local-path.R"
+local_full_path = file.path(get_base_dir(), local_path)
+if(!file.create(local_full_path)) {
+  stop("This documentation is not terminated doe to unknown error")
+}
+writeLines(file_2_content, con = local_full_path)
+
+## now when we source them, the absolute path is sourced, and the
+## relative file path is sourced too.
 W4MRUtils::source_local(c(temp_path, local_path), do_print = TRUE)
-file.remove(local_path)
+file.remove(local_full_path)
 
 ## the function is accessible here
 processing(list(), get_logger("Tool Name"))

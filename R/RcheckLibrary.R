@@ -1,15 +1,14 @@
-#' @title R check Tools
-#'
-#' @name R Check Tools
-#'
-#' @author M.Petera,
-#' @description
-#' R functions to use in R scripts
-#' (management of various generic subroutines)
-#'
-#' V0: script structure + first functions
-#' V1: More detailed error messages in match functions
-NULL
+# @title R check Tools
+#
+# @name R Check Tools
+#
+# @author M.Petera,
+# @description
+# R functions to use in R scripts
+# (management of various generic subroutines)
+#
+# V0: script structure + first functions
+# V1: More detailed error messages in match functions
 
 #' @title Check Errors
 #'
