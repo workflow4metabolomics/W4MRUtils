@@ -49,12 +49,12 @@ param_printer <- function(name, args) {
 }
 args <- W4MRUtils::parse_args(commandArgs())
 args
-param_printer("a-integer", args)
-param_printer("a-float", args)
-param_printer("a-boolean", args)
-param_printer("a-list", args)
-args$`a-list` <- as.numeric(strsplit(args$`a-list`, ",")[[1]])
-param_printer("a-list", args)
+param_printer("a_integer", args)
+param_printer("a_float", args)
+param_printer("a_boolean", args)
+param_printer("a_list", args)
+args$a_list <- as.numeric(strsplit(args$a_list, ",")[[1]])
+param_printer("a_list", args)
 ```
 
 
