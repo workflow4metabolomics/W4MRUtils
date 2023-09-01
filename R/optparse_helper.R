@@ -6,6 +6,14 @@
 #' the provided parameter is a trigger (logical - TRUE/FALSE).
 #' When the trigger parameter is not provided in the command line,
 #' the value is FALSE. Otherwise, it is TRUE.
+#' @param help - The help string to display when --help is triggered
+#' @param short - The shortcut fir this parameter. For example
+#'   for a --output param, we could use
+#'   \code{optparse_flag(short = "-o", ...)} to set the "-o" shortcut.
+#' @param default - The default value this parameter will hold.
+#' @return a list to give to \code{optparse_parameters} to build the
+#'   whole command line parsing tool.
+#' @seealso [optparse_parameters()]
 #' @examples
 #'
 #' str(optparse_parameters(
@@ -32,6 +40,8 @@ optparse_flag <- function(
 #' @description
 #' To be used with \code{optparse_parameters}. This function tells
 #' the provided parameter is to be parsed as an numeric.
+#' @inheritParams optparse_flag
+#' @inherit optparse_flag seealso
 #' @examples
 #'
 #' str(optparse_parameters(
@@ -60,6 +70,8 @@ optparse_numeric <- function(
 #' @description
 #' To be used with \code{optparse_parameters}. This function tells
 #' the provided parameter is to be parsed as an integer.
+#' @inheritParams optparse_flag
+#' @inherit optparse_flag seealso
 #' @examples
 #'
 #' str(optparse_parameters(
@@ -88,6 +100,8 @@ optparse_integer <- function(
 #' @description
 #' To be used with \code{optparse_parameters}. This function tells
 #' the provided parameter is to be parsed as a single string.
+#' @inheritParams optparse_flag
+#' @inherit optparse_flag seealso
 #' @examples
 #'
 #' str(optparse_parameters(
@@ -119,6 +133,12 @@ optparse_character <- function(
 #' The \code{of} parameter tells what type are elements of the list.
 #' Each element must be separated by a separator. This separator must
 #' be the value given in the \code{sep} parameter
+#' @inheritParams optparse_flag
+#' @inherit optparse_flag seealso
+#' @param of - This type of elements of this list
+#' @param sep - This character to split on, to get the list
+#' @param truevalues - A \code{character} vector of different string
+#'   values to translate it as \code{TRUE} value.
 #' @examples
 #'
 #' str(optparse_parameters(
@@ -213,12 +233,12 @@ optparse_list <- function(
 #' @author L.Pavot
 #' @export
 optparse_parameters <- function(
-  ...,
   fix_hyphens = TRUE,
   fix_dots = TRUE,
   add_trailing_hyphens = TRUE,
   args = NULL,
-  no_optparse = FALSE
+  no_optparse = FALSE,
+  ...
 ) {
   if (
     !suppressWarnings(requireNamespace("optparse", quietly = TRUE))
