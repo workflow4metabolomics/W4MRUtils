@@ -454,7 +454,7 @@ W4MLogger$methods(.add_coloring__ = function(message, level) {
 #' @noRd
 W4MLogger$methods(.write__ = function(message, no_color = NULL) {
   .self$out_func(message)
-  print(1);print(.self$out_file);for (curent_file in .self$out_file) {
+  for (curent_file in .self$out_file) {
     if (is(curent_file, "connection") && isOpen(curent_file)) {
       if (is.null(no_color)) {
         no_color <- message
@@ -546,7 +546,6 @@ W4MLogger$methods(finalize = function() {
 #'
 NULL
 W4MLogger$methods(close_files = function() {
-  print(2);print(.self$out_file)
   for (path in names(.self$out_file)) {
     curent_file <- .self$out_file[[path]]
     if (is(curent_file, "connection") && isOpen(curent_file)) {
@@ -565,8 +564,6 @@ W4MLogger$methods(close_files = function() {
 #'
 NULL
 W4MLogger$methods(open_files = function() {
-  print(3)
-  print(.self$out_file)
   for (path in names(.self$out_file)) {
     curent_file <- .self$out_file[[path]]
     if (is(curent_file, "connection") && isOpen(curent_file)) {
