@@ -160,7 +160,8 @@ W4MLogger <- setRefClass( ## nolint - This is a class name
     default = "function",
     out_func = "function",
     instantiated = "logical",
-    out_file = "list"
+    out_file = "list",
+    status = "list"
   )
 )
 
@@ -248,7 +249,7 @@ NULL
 W4MLogger$methods(set_out_paths = function(out_paths) {
   .self$out_file <- list()
   .self$add_out_paths(out_paths)
-  return(.self)
+  return(invisible(.self))
 })
 
 #' @name W4MLogger_add_out_paths
@@ -259,9 +260,9 @@ W4MLogger$methods(set_out_paths = function(out_paths) {
 NULL
 W4MLogger$methods(add_out_paths = function(out_paths) {
   for (path in out_paths) {
-    .self$out_file[[length(.self$out_file) + 1]] <- file(path, open = "a")
+    .self$out_file[[path]] <- file(path, open = "a")
   }
-  return(.self)
+  return(invisible(.self))
 })
 
 #' This method activate or deactivate the logging of debugs messages
@@ -347,7 +348,9 @@ W4MLogger$methods(.set_value_for__ = function(level, value, default) {
   if (value) {
     func <- function(...) message(level, ...)
     assign("message", .self$.message__, envir = environment(func))
+    .self$status[[level]] <- TRUE
   } else {
+    .self$status[[level]] <- FALSE
     func <- function(...) invisible(.self)
   }
   .self$field(level, func)
@@ -402,7 +405,15 @@ W4MLogger$methods(.message__ = function(level, ..., format = FALSE) {
       }
       return(invisible(.self))
     }
-    messages <- sprintf(...)
+    formatings <- list(...)
+    for (i in seq_along(formatings)) {
+      if (!is.character(formatings[[i]])) {
+        formatings[[i]] <- collapse_lines(
+          capture.output(str(formatings[[i]]))
+        )
+      }
+    }
+    messages <- do.call(sprintf, formatings)
   } else if (length(messages) == 0) {
     messages <- ""
   } else {
@@ -415,13 +426,19 @@ W4MLogger$methods(.message__ = function(level, ..., format = FALSE) {
 W4MLogger$methods(.one_message__ = function(level, ...) {
   message <- c(...)
   if (!is.character(message)) {
-    message <- paste(capture.output(str(message)), collapse = "\n")
+    message <- collapse_lines(capture.output(str(message)))
   }
-  text <- .self$.get_formated__(level, message)
-  if (.self$do_coloring) {
-    .self$.write__(.self$.add_coloring__(text, level), no_color = text)
-  } else {
-    .self$.write__(text)
+  messages <- strsplit(message, "\n", fixed = TRUE)[[1]]
+  if (length(messages) == 0) {
+    messages <- ""
+  }
+  for (msg in messages) {
+    text <- .self$.get_formated__(level, msg)
+    if (.self$do_coloring) {
+      .self$.write__(.self$.add_coloring__(text, level), no_color = text)
+    } else {
+      .self$.write__(text)
+    }
   }
   return(invisible(.self))
 })
@@ -437,12 +454,12 @@ W4MLogger$methods(.add_coloring__ = function(message, level) {
 #' @noRd
 W4MLogger$methods(.write__ = function(message, no_color = NULL) {
   .self$out_func(message)
-  for (file in .self$out_file) {
-    if (!is.null(file) && isOpen(file)) {
+  print(1);print(.self$out_file);for (curent_file in .self$out_file) {
+    if (is(curent_file, "connection") && isOpen(curent_file)) {
       if (is.null(no_color)) {
         no_color <- message
       }
-      base::write(no_color, file = file, append = TRUE)
+      base::write(no_color, file = curent_file, append = TRUE)
     }
   }
   return(invisible(.self))
@@ -468,6 +485,45 @@ W4MLogger$methods(.get_formated__ = function(level, message) {
   return(content)
 })
 
+#' @title W4MLogger_finalize
+#' @name W4MLogger_finalize
+#' @description
+#' The function W4MLogger$finalize is the destructor function of this
+#' class. It closes every files that was opened by the logger, or that
+#' was provided during execution. It has to be considered internal.
+#'
+NULL
+W4MLogger$methods(copy = function(new_name = NULL) {
+  if (is.null(new_name)) {
+    new_name <- .self$name
+  }
+  logger <- W4MLogger(
+    name = new_name,
+    format = .self$format,
+    do_coloring = .self$do_coloring,
+    coloring = .self$coloring,
+    out_func = .self$out_func
+  )
+  logger$set_info(.self$status[["info"]])
+  logger$set_debug(.self$status[["debug"]])
+  logger$set_verbose(.self$status[["verbose"]])
+  logger$set_warning(.self$status[["warning"]])
+  logger$set_error(.self$status[["error"]])
+  return(logger)
+})
+
+#' @title W4MLogger_finalize
+#' @name W4MLogger_finalize
+#' @description
+#' The function W4MLogger$finalize is the destructor function of this
+#' class. It closes every files that was opened by the logger, or that
+#' was provided during execution. It has to be considered internal.
+#'
+NULL
+W4MLogger$methods(sublogger = function(name, sep = "-") {
+  logger <- .self$copy(name = paste(.self$name, name, sep = sep))
+  return(logger)
+})
 
 #' @title W4MLogger_finalize
 #' @name W4MLogger_finalize
@@ -478,9 +534,44 @@ W4MLogger$methods(.get_formated__ = function(level, message) {
 #'
 NULL
 W4MLogger$methods(finalize = function() {
-  for (file in .self$out_file) {
-    if (!is.null(file) && isOpen(file)) {
-      close(file)
+  .self$close_files()
+})
+
+#' @title W4MLogger_finalize
+#' @name W4MLogger_finalize
+#' @description
+#' The function W4MLogger$finalize is the destructor function of this
+#' class. It closes every files that was opened by the logger, or that
+#' was provided during execution. It has to be considered internal.
+#'
+NULL
+W4MLogger$methods(close_files = function() {
+  print(2);print(.self$out_file)
+  for (path in names(.self$out_file)) {
+    curent_file <- .self$out_file[[path]]
+    if (is(curent_file, "connection") && isOpen(curent_file)) {
+      close(curent_file)
     }
+    .self$out_file[[path]] <- NULL
+  }
+})
+
+#' @title W4MLogger_finalize
+#' @name W4MLogger_finalize
+#' @description
+#' The function W4MLogger$finalize is the destructor function of this
+#' class. It closes every files that was opened by the logger, or that
+#' was provided during execution. It has to be considered internal.
+#'
+NULL
+W4MLogger$methods(open_files = function() {
+  print(3)
+  print(.self$out_file)
+  for (path in names(.self$out_file)) {
+    curent_file <- .self$out_file[[path]]
+    if (is(curent_file, "connection") && isOpen(curent_file)) {
+      close(curent_file)
+    }
+    .self$out_file[[path]] <- file(path, open = "a")
   }
 })
