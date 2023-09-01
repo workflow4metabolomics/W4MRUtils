@@ -1,6 +1,8 @@
 #'
 #' @importFrom utils capture.output
 #' @importFrom utils str
+#' @importFrom utils packageVersion
+#' @importFrom utils sessionInfo
 #'
 NULL
 
@@ -40,6 +42,8 @@ mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
 run_galaxy_function <- function(tool_name, func, ...) {
   check_param_type_n_length(tool_name, "character")
   check_param_type_n_length(func, "function")
+  ## to prevent R CMD BUILD from telling logger does not exist
+  logger <- NULL
   env <- new.env()
   env$func <- func
   return(run_galaxy_processing(
@@ -72,49 +76,86 @@ run_galaxy_function <- function(tool_name, func, ...) {
 #' defined in these scripts.
 #'
 #' @examples
-#' ## let's say we have a R script with this content:
-#' path <- tempfile(fileext = ".R")
-#' file.create(path)
-#' writeLines(c(
-#'   'setup_logger <- function(args, logger) {',
-#'   '  if (!is.null(args$verbose) && args$verbose) {',
-#'   '    logger$set_verbose(TRUE)',
-#'   '  }',
-#'   '  if (!is.null(args$debug) && args$debug) {',
-#'   '    logger$set_debug(TRUE)',
-#'   '  }',
-#'   '  if (!is.null(args$logs)) {',
-#'   '    logger$add_out_paths(args$logs)',
-#'   '  }',
-#'   '}',
-#'   'processing <- function(args, logger) {',
-#'   '  logger$info("The tool is working...")',
-#'   '  Sys.sleep(1)',
-#'   '  logger$infof("Input: %s.", args$input)',
-#'   '  logger$info("The tool stoping.")',
-#'   '  return(NULL)',
-#'   '}'
-#'   ), con = path
-#' )
 #'
+#' write_r_file_with_content <- function(content) {
+#'   "
+#'   This function creates a temp R file. It writes the provided
+#'   content in the R file. Then it returns the path of the script.
+#'   "
+#'   path <- tempfile(fileext = ".R")
+#'   file.create(path)
+#'   writeLines(content, con = path)
+#'   return(path)
+#' }
 #' ## let's fake a galaxy env
 #' Sys.setenv(GALAXY_SLOTS = 1)
-#'
 #' ## let's says the tool has been launched with this command line
+#' log_file <- tempfile()
+#' file.create(log_file)
 #' raw_args <- list(
-#'   '--input', 'in.csv',
-#'   '--output', 'out.csv',
-#'   '--logs', 'logs',
-#'   '--one-float', '3.14',
-#'   '--one-integer', '456',
-#'   '--one-logical', 'FALSE',
-#'   '--some-floats', '1.5,2.4,3.3',
-#'   '--some-characters', 'test,truc,bidule',
-#'   '--debug', 'TRUE',
-#'   '--verbose', 'FALSE'
+#'   "--args",
+#'   "--input", "in.csv",
+#'   "--output", "out.csv",
+#'   "--logs", log_file,
+#'   "--one-float", "3.14",
+#'   "--one-integer", "456",
+#'   "--one-logical", "FALSE",
+#'   "--some-floats", "1.5,2.4,3.3",
+#'   "--some-characters", "test,truc,bidule",
+#'   "--debug", "TRUE",
+#'   "--verbose", "FALSE"
 #' )
 #'
-#' ## out wrapper script:
+#' ##
+#' # example 1
+#' ##
+#'
+#' my_r_script <- write_r_file_with_content('
+#'   my_processing <- function(args, logger) {
+#'     logger$info("The tool is running")
+#'     logger$infof("Input file: %s.", args$input)
+#'     logger$info("The tool ended.")
+#'   }
+#' ')
+#'
+#' W4MRUtils::run_galaxy_processing(
+#'   "Test tool 1",
+#'   my_processing(args, logger),
+#'   source_file = my_r_script,
+#'   args = W4MRUtils::parse_args(args = raw_args)
+#' )
+#'
+#'
+#' ##
+#' # example 2
+#'
+#' ## let's say we have a R script with this content:
+#' path <- write_r_file_with_content('
+#'   setup_logger <- function(args, logger) {
+#'     if (!is.null(args$verbose)) {
+#'       logger$set_verbose(args$verbose)
+#'     }
+#'     if (!is.null(args$debug)) {
+#'       logger$set_debug(args$debug)
+#'     }
+#'     if (!is.null(args$logs)) {
+#'       logger$add_out_paths(args$logs)
+#'     }
+#'   }
+#'   stop_logger <- function(logger) {
+#'     logger$close_files()
+#'   }
+#'   processing <- function(args, logger) {
+#'     setup_logger(args, logger)
+#'     logger$info("The tool is working...")
+#'     logger$infof("Input: %s.", args$input)
+#'     logger$info("The tool stoping.")
+#'     stop_logger(logger)
+#'     return(NULL)
+#'   }')
+#'
+#'
+#' ## wrapper script:
 #'
 #' args <- W4MRUtils::optparse_parameters(
 #'   input = W4MRUtils::optparse_character(),
@@ -127,7 +168,7 @@ run_galaxy_function <- function(tool_name, func, ...) {
 #'   some_characters = W4MRUtils::optparse_list(of = "character"),
 #'   debug = W4MRUtils::optparse_flag(),
 #'   verbose = W4MRUtils::optparse_flag(),
-#'   args = raw_args
+#'   args = raw_args[raw_args != "--args"]
 #' )
 #'
 #' W4MRUtils::run_galaxy_processing("A Test tool", args = args, {
@@ -135,7 +176,6 @@ run_galaxy_function <- function(tool_name, func, ...) {
 #'   processing(args, logger)
 #' }, source_files = path)
 #'
-#' ## That's all we have to write
 #'
 #' @author L.Pavot
 #' @export
@@ -147,7 +187,8 @@ run_galaxy_processing <- function(
   args = NULL,
   logger = NULL,
   source_files = c(),
-  env = NULL
+  env = NULL,
+  do_traceback = FALSE
 ) {
   if (is.null(logger)) {
     logger <- get_logger(tool_name)
@@ -183,21 +224,27 @@ run_galaxy_processing <- function(
     logger$infof("Sourcing %s...", file)
     source_local(file, env = env)
   }
+  time_before <- proc.time()
   result <- tryCatch({
       eval(rlang::enexpr(code), env)
     },
     error = function(error) {
       in_error <<- TRUE
+      if (do_traceback) {
+        traceback(2)
+      }
       logger$errorf("The tool %s has crashed.", tool_name)
       logger$errorf("Error: %s", error)
-      return(NULL)
+      return(error)
     }
   )
+  ellapsed_time <- proc.time() - time_before
   if (in_galaxy_env()) {
     show_galaxy_footer(
       tool_name,
       tool_version = tool_version,
-      logger = logger
+      logger = logger,
+      ellapsed = ellapsed_time
     )
   }
   if (in_error) {
@@ -214,7 +261,27 @@ run_galaxy_processing <- function(
 #' @description
 #' This function prints the header to display in galaxy's tools logs
 #'
+#' @param tool_name a \code{character(1)} holding the
+#'   running tool's name.
+#' @param tool_version a \code{character(1)} holding the
+#'   running tool's version.
+#' @param args a \code{list(param="value")} - if provided, their are the
+#'   parameters shown in galaxy header and/or footer.
+#' @param logger a \code{get_logger("name")} instance - if provided, the
+#'   galaxy footer if output from the logger.
+#' @param show_start_time - a logical telling whether to display
+#'   the start time or not.
+#' @param show_sys - a logical telling whether to display
+#'   the system variables or not.
+#' @param show_parameters - a logical telling whether to display
+#'   the parameters or not.
+#' @return NULL
+#'
 #' @seealso [run_galaxy_processing]
+#'
+#' @examples
+#'
+#' show_galaxy_header("Tool Name", "1.2.0")
 #'
 #' @author L.Pavot
 #' @export
@@ -227,14 +294,11 @@ show_galaxy_header <- function(
   show_sys = TRUE,
   show_parameters = TRUE
 ) {
-  if (is.null(args)) {
-    args <- commandArgs()
-  }
   sep <- collapse(rep("-", 78))
   gx_header <- ""
   if (show_start_time) {
     gx_header <- sprintf(
-      "%sJob starting time:\n%s\n%s\n",
+      "%sJob starting time:\n%s\n%s",
       gx_header,
       format(Sys.time(), "%a %d %b %Y %X"),
       sep
@@ -242,15 +306,18 @@ show_galaxy_header <- function(
   }
   if (show_sys) {
     gx_header <- sprintf(
-      "%s\n%s\n%s\n",
+      "%s\n%s\n%s",
       gx_header,
       collapse_lines(capture.output(print(get_r_env()))),
       sep
     )
   }
   if (show_parameters) {
+    if (is.null(args)) {
+      args <- commandArgs()
+    }
     gx_header <- sprintf(
-      "%s\nParameters used in %s - version %s:\n\n%s\n%s\n",
+      "%s\nParameters used in %s - version %s:\n\n%s\n%s",
       gx_header,
       tool_name,
       tool_version,
@@ -269,15 +336,29 @@ show_galaxy_header <- function(
 #' @description
 #' This function prints the footer to display in galaxy's tools logs
 #'
+#' @param tool_name a \code{character(1)} holding the
+#'   running tool's name.
+#' @param tool_version a \code{character(1)} holding the
+#'   running tool's version.
+#' @param logger a \code{get_logger("name")} instance - if provided, the
+#'   galaxy footer if output from the logger.
+#' @param ellapsed NULL or a \code{character(1)} with execution duration.
+#' @return NULL
+#'
 #' @seealso [run_galaxy_processing]
+#'
+#' @examples
+#'
+#' show_galaxy_header("Tool Name", "1.2.0")
 #'
 #' @author L.Pavot
 #' @export
 show_galaxy_footer <- function(
   tool_name,
   tool_version,
-  args = NULL,
-  logger = NULL
+  logger = NULL,
+  show_packages = TRUE,
+  ellapsed = NULL
 ) {
   add <- function(text = "") {
     gx_footer <<- sprintf("%s\n%s", gx_footer, text)
@@ -289,28 +370,36 @@ show_galaxy_footer <- function(
   )
   add(collapse(rep("-", 78)))
   add()
+  add(sprintf("Time ellapsed: %s", ellapsed))
+  add()
   sessioninfo <- sessionInfo()
   add(sessioninfo$R.version$version.string)
-  add()
-  add("Main packages:")
-  for (pkg in names(sessioninfo$otherPkgs)) {
-    add(paste(pkg, packageVersion(pkg)))
-  }
-  add()
-  add("Other loaded packages:")
-  for (pkg in names(sessioninfo$loadedOnly)) {
-    add(paste(pkg, packageVersion(pkg)))
+  if (show_packages) {
+    add()
+    add("Main packages:")
+    for (pkg in names(sessioninfo$otherPkgs)) {
+      add(paste(pkg, packageVersion(pkg)))
+    }
+    add()
+    add("Other loaded packages:")
+    for (pkg in names(sessioninfo$loadedOnly)) {
+      add(paste(pkg, packageVersion(pkg)))
+    }
   }
   if (is.null(logger)) {
     cat(gx_footer)
   } else {
     logger$default(gx_footer)
   }
+  return(invisible(NULL))
 }
 
 #' get_r_env - provides env vars begining with R_*
 #' @description
 #' Returns a list of env vars if the start with R_*.
+#'
+#' @return a \code{list} of environment variables which
+#'   begin by `R_`.
 #'
 #' @seealso [run_galaxy_processing]
 #'
@@ -332,6 +421,12 @@ show_sys <- function() {
 #' @export
 chocisse <- show_sys ## lol
 
+#' in_galaxy_env - check if the script has been run by galaxy
+#' @description
+#' `in_galaxy_env` returns \code{TRUE} if it detects some
+#' galaxy-specific environment variables. \code{FALSE} otherwise.
+#' @return A logical - whether the script has been run by galaxy or not.
+#'
 #' @export
 in_galaxy_env <- function() {
   sysvars <- Sys.getenv()
@@ -349,12 +444,16 @@ in_galaxy_env <- function() {
 
 #' unmangle_galaxy_param - revert effects of galaxy manglings.
 #' @description
-#' When running a tool from galaxy, the command line to run it may
-#' have been altered because some forbiden chars have been translated.
+#' When running a tool from galaxy, the command line may be
+#' altered because some forbidden chars have been translated by galaxy.
 #'
 #' This function takes `args` are invert the galaxy's mangling process.
 #'
-#' @seealso [run_galaxy_processing]
+#' @param args named \code{list} - contains params_name=value.
+#' @return a named \code{list} - with unmangled parameter name and
+#'   values.
+#'
+#' @seealso [run_galaxy_processing], [unmangle_galaxy_string]
 #'
 #' @author L.Pavot
 #' @export
@@ -379,7 +478,10 @@ unmangle_galaxy_param <- function(args) {
 #' @description
 #' Revert effect of string mangling from galaxy on the given string.
 #'
-#' @seealso [run_galaxy_processing]
+#' @param string - the character vector to fix mangling.
+#' @return string - the character vector, fixed.
+#'
+#' @seealso [run_galaxy_processing], [unmangle_galaxy_param]
 #'
 #' @author L.Pavot
 #' @export
