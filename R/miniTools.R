@@ -14,7 +14,7 @@
 #'
 NULL
 
-#' @title source local - source file, from absolute or relative path
+#' @title source_local - source file, from absolute or relative path
 #'
 #' @description source_local
 #' Transforms a relative path to an absolute one, and sources the path.
@@ -24,6 +24,7 @@ NULL
 #' @param env an environement in which to source the paths
 #' @param do_print a logical, telling whether to print sourced paths or
 #'   not
+#' @param keep_source See the parameter keep.source from source
 #' @return a vector resulting from the sourcing of the files provided.
 #'
 #' @examples
@@ -71,13 +72,20 @@ NULL
 #' ## the function is accessible here
 #' processing(list(), get_logger("Tool Name"))
 #'
+#' @seealso ["source"]
+#'
 #' @export
-source_local <- function(..., env = FALSE, do_print = FALSE) {
+source_local <- function(
+  ...,
+  env = FALSE,
+  do_print = FALSE,
+  keep_source = TRUE
+) {
   do_source <- function(path) {
     if (do_print) {
       printf("Sourcing %s", path)
     }
-    base::source(path, local = env)
+    base::source(path, local = env, keep.source = keep_source)
   }
   base_dir <- get_base_dir()
   files <- c(...)
