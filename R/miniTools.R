@@ -104,6 +104,8 @@ source_local <- function(
 #' @return the directory path of the main script. PWD otherwise.
 #'
 #' @examples
+#' print(get_base_dir())
+#'
 #' @export
 get_base_dir <- function() {
   argv <- commandArgs(trailingOnly = FALSE)
@@ -194,7 +196,9 @@ shy_lib <- function(...) {
 parse_args <- function(
   args = NULL,
   convert_booleans = TRUE,
-  convert_numerics = TRUE
+  convert_numerics = TRUE,
+  strip_trailing_dash = TRUE,
+  replace_dashes = TRUE
 ) {
   warning(
     "Please, use the 'optparse' library instead of the 'parse_args' function."
@@ -209,6 +213,12 @@ parse_args <- function(
   seq_by2 <- seq(start, length(args), by = 2)
   result <- as.list(args[seq_by2 + 1])
   names(result) <- args[seq_by2]
+  if (strip_trailing_dash) {
+    names(result) <- gsub("^-+", "", names(result), perl = TRUE)
+  }
+  if (replace_dashes) {
+    names(result) <- gsub("-", "_", names(result))
+  }
   converters <- c()
   if (convert_booleans) {
     converters <- c(

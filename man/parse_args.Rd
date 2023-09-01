@@ -4,7 +4,13 @@
 \alias{parse_args}
 \title{Parse Command arguments}
 \usage{
-parse_args(args = NULL, convert_booleans = TRUE, convert_numerics = TRUE)
+parse_args(
+  args = NULL,
+  convert_booleans = TRUE,
+  convert_numerics = TRUE,
+  strip_trailing_dash = TRUE,
+  replace_dashes = TRUE
+)
 }
 \arguments{
 \item{args}{optional, provide arguments to parse.
