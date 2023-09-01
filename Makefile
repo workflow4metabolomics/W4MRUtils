@@ -48,7 +48,11 @@ doc: README.md docfiles
 NAMESPACE: simple_document
 
 docfiles: simple_document
+	$(MAKE) docs/docs
 	$(REXEC) 'pkgdown::build_site()'
+
+docs/docs:
+	@- [ ! -e "docs/docs" ] && ln -s ../docs/ docs/
 
 simple_document:
 	@$(REXEC) "devtools::document('.')"
@@ -75,7 +79,9 @@ $(package_tgz):		\
 	DESCRIPTION			\
 	NAMESPACE
 	@echo "Building package..."
+	@-rm docs/docs
 	@$(R) CMD build "."
+	@$(MAKE) docs/docs
 	@echo "Built."
 
 ifneq ("$(NO_REPORT)","")
@@ -95,6 +101,7 @@ quick_test: $(all_R_files)
 	@echo "Finished."
 
 quick_install:
+	@-rm docs/docs
 	$(REXEC) 'devtools::install(".", dependencies=FALSE, repos=NULL, type="source")'
 
 uninstall:
