@@ -2,9 +2,9 @@
 % Please edit documentation in R/miniTools.R
 \name{source_local}
 \alias{source_local}
-\title{source local - source file, from absolute or relative path}
+\title{source_local - source file, from absolute or relative path}
 \usage{
-source_local(..., env = FALSE, do_print = FALSE)
+source_local(..., env = FALSE, do_print = FALSE, keep_source = TRUE)
 }
 \arguments{
 \item{...}{paths, character vector of file paths to source}
@@ -13,6 +13,8 @@ source_local(..., env = FALSE, do_print = FALSE)
 
 \item{do_print}{a logical, telling whether to print sourced paths or
 not}
+
+\item{keep_source}{See the parameter keep.source from source}
 }
 \value{
 a vector resulting from the sourcing of the files provided.
@@ -68,4 +70,7 @@ file.remove(local_full_path)
 ## the function is accessible here
 processing(list(), get_logger("Tool Name"))
 
+}
+\seealso{
+\link{"source"}
 }
