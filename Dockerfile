@@ -35,7 +35,6 @@ ENV BUILD_DEPS=" \
     libbz2-dev                              \
     liblzma5                                \
     liblzma-dev                             \
-    libpcre2-posix2                         \
     libpcre2-dev                            \
     libcairo2-dev                           \
     libcurl4                                \
@@ -100,7 +99,7 @@ RUN apt-get update                              \
 RUN ln -s /opt/R-${R_VERSION}/bin/R /bin/R
 RUN ln -s /opt/R-${R_VERSION}/bin/Rscript /bin/Rscript
 
-RUN R -q -e "install.packages('W4MRUtils', repos='https://cran.irsn.fr');"
+RUN R -q -e "install.packages(c('devtools', 'rmarkdown', 'covr'), repos='https://cran.irsn.fr');"
 
 CMD ["R", "-q"]
 

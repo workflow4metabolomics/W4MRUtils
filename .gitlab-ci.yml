@@ -5,7 +5,6 @@ variables:
   set_rcran: options(repos='$cran_url');
   DOCKER_IMAGE: w4mrutils
 
-
 stages:
   - build
   - check
@@ -13,10 +12,8 @@ stages:
   - deploy
 
 code quality check:
-  stage:
-    build
-  tags:
-    -  ara-unh-sauron-shell
+  stage: build
+  tags: [shell]
   script:
     - |
       doc_count=$(grep -P "^#'" R/*.R | wc -l) ;
@@ -30,25 +27,35 @@ code quality check:
         echo "Attention, the [documentation / code] ratio is very low" ;
       fi
 
-Build docker image:
-  stage:
-    build
-  tags:
-    -  ara-unh-sauron-shell
+
+
+.parallel:
+  parallel:
+    matrix:
+      - R_VERSION:
+         - "4.3.1"
+         - "4.2.3"
+         - "4.1.3"
+         - "4.0.5"
+
+rm prev docker images:
+  stage: deploy
+  tags: [shell]
+  extends: .parallel
   script:
-    - last_image() { docker image ls --format "{{.Tag}}" $DOCKER_IMAGE | grep -Po '\d+'; }
-    - echo "==================================";
-    - echo "[info] Building Docker image for $DOCKER_IMAGE ";
-    - echo "Last image build is $(last_image) - $(($(date +'%Y%m%d') - $(last_image))) days old."
-    - if [[ "$(last_image)" = "" ]] || [[ $(($(date +'%Y%m%d') - $(last_image))) -ge 30 ]]; then
-        echo "Rebuilding $DOCKER_IMAGE image..." ;
-        docker rmi $DOCKER_IMAGE 2>/dev/null || true ;
-        docker rmi $DOCKER_IMAGE:$(last_image) 2>/dev/null || true ;
-        docker build -t $DOCKER_IMAGE $CI_PROJECT_DIR ;
-        docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:$(date +'%Y%m%d') ;
-      else
-        echo "Already built." ;
-      fi
+      - docker rmi --force "${rocker/tidyverse}-${R_VERSION}"
+
+Build docker image:
+  stage: build
+  tags: [shell]
+  script:
+    - |
+      echo "==================================";
+      echo "[info] Building Docker image for $DOCKER_IMAGE ";
+      docker build \
+        --build-arg="R_VERSION=${R_VERSION}" \
+        --tag "$DOCKER_IMAGE" \
+        . ;
 
 checking:
   needs: ["Build docker image"]
@@ -57,8 +64,7 @@ checking:
   allow_failure: true
   script:
     - R -q -e "devtools::check('$CI_PROJECT_DIR')"
-  tags:
-    -  ara-unh-sauron-shell
+  tags: [docker]
 # To have the coverage percentage appear as a gitlab badge follow these
 # instructions:
 # https://docs.gitlab.com/ee/user/project/pipelines/settings.html#test-coverage-parsing
@@ -68,9 +74,7 @@ checking:
 testing:
   needs: [checking]
   stage: test
-  only:
-    - dev
-    - main
+  only: [dev,main]
   image: $DOCKER_IMAGE
   allow_failure: true
   when: on_success
@@ -78,12 +82,9 @@ testing:
     - R -q -e "devtools::test('$CI_PROJECT_DIR')"
     - R -q -e "covr::gitlab(quiet = FALSE)"
   artifacts:
-    paths:
-      - public
-  tags:
-    -  ara-unh-sauron-docker
-  coverage:
-    '/ Coverage: \d+\.\d+/'
+    paths: [public]
+  tags: [docker]
+  coverage: '/ Coverage: \d+\.\d+/'
 
 # To produce a code coverage report as a GitLab page see
 # https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/
@@ -91,30 +92,21 @@ testing:
 pages:
   needs: [testing]
   stage: deploy
-  only:
-    - main
+  only: [main]
   image: $DOCKER_IMAGE
-  dependencies:
-    - testing
+  dependencies: [testing]
   script:
     - ls
   artifacts:
-    paths:
-      - public
+    paths: [public]
     expire_in: 30 days
-  tags:
-    - ara-unh-sauron-docker
+  tags: [docker]
 
 building conda recipe:
-  stage:
-    build
-  only:
-    - main
-  allow_failure:
-    true
-  image:
-    quay.io/condaforge/linux-anvil-cos7-x86_64
+  stage: build
+  only: [main]
+  allow_failure: true
+  image: quay.io/condaforge/linux-anvil-cos7-x86_64
   script:
     - conda-build --override-channels -c conda-forge $CI_PROJECT_DIR/meta.yaml
-  tags:
-    - ara-unh-sauron-docker
+  tags: [docker]
