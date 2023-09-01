@@ -5,7 +5,7 @@ MAINTAINER Lain Pavot <lain.pavot@inrae.fr>
 
 WORKDIR /
 
-ENV R_VERSION 4.3.0
+ARG R_VERSION=4.3.0
 ENV ICU_VERSION 58
 ENV BASE_ICU_URL=https://github.com/unicode-org/icu/releases/download/
 ENV ICU_URL=${BASE_ICU_URL}/release-${ICU_VERSION}-2/icu4c-${ICU_VERSION}_2-src.tgz
@@ -22,43 +22,36 @@ ENV R_COMPILE_FLAGS="           \
     -g                          \
 "
 
-ENV BUILD_DEPS=" \
-    qpdf                                    \
-    wget                                    \
-    gcc                                     \
-    gfortran                                \
-    g++                                     \
-    file                                    \
-    zlib1g                                  \
-    zlib1g-dev                              \
-    bzip2                                   \
-    libbz2-dev                              \
-    liblzma5                                \
-    liblzma-dev                             \
-    libpcre2-dev                            \
-    libcairo2-dev                           \
-    libcurl4                                \
-    libcurl4-openssl-dev                    \
-    libpng-dev                              \
-    libjpeg-dev                             \
-    libreadline8                            \
-    libreadline-dev                         \
-    libtiff5-dev                            \
-    libx11-dev                              \
-    libxt-dev                               \
-    make                                    \
-"
-
-ENV REMOVE_DEPS=" \
-    libbz2-dev \
-    libcurl4-openssl-dev \
-    libpcre2-dev \
-    libpng-dev \
-    libreadline-dev \
-    libtiff5-dev \
-    liblzma-dev \
-    libx11-dev \
-    libxt-dev \
+ENV BUILD_DEPS="                \
+    qpdf                        \
+    wget                        \
+    gcc                         \
+    gfortran                    \
+    g++                         \
+    file                        \
+    zlib1g                      \
+    zlib1g-dev                  \
+    bzip2                       \
+    libbz2-dev                  \
+    libxml2-dev                 \
+    liblzma5                    \
+    liblzma-dev                 \
+    libpcre2-dev                \
+    libcairo2-dev               \
+    libcurl4                    \
+    libcurl4-openssl-dev        \
+    libpng-dev                  \
+    libjpeg-dev                 \
+    libreadline8                \
+    libreadline-dev             \
+    libtiff5-dev                \
+    libx11-dev                  \
+    libxt-dev                   \
+    libssl-dev                  \
+    libfontconfig1-dev          \
+    libharfbuzz-dev             \
+    libfribidi-dev              \
+    make                        \
 "
 
 RUN apt-get update                              \
@@ -89,7 +82,6 @@ RUN apt-get update                              \
     && rm -rf /icu4c-${ICU_VERSION}_2-src.tgz   \
     && rm -rf /R-${R_VERSION}.tar.gz            \
     && rm -rf /R-${R_VERSION}                   \
-    && apt-get purge -y ${REMOVE_DEPS}          \
     && apt-get clean autoclean                  \
     && apt-get autoremove --yes                 \
     && rm -rf /tmp/*                            \
@@ -100,6 +92,8 @@ RUN ln -s /opt/R-${R_VERSION}/bin/R /bin/R
 RUN ln -s /opt/R-${R_VERSION}/bin/Rscript /bin/Rscript
 
 RUN R -q -e "install.packages(c('devtools', 'rmarkdown', 'covr'), repos='https://cran.irsn.fr');"
+RUN R -q -e "install.packages(c('pandoc', 'optparse'), repos='https://cran.irsn.fr');"
+RUN R -q -e "install.packages(c('DT', 'htmltools'), repos='https://cran.irsn.fr');"
 
 CMD ["R", "-q"]
 

@@ -51,19 +51,19 @@ testthat::test_that("Parameter checkers works fine", {
   uwu <- function(x) {
     check_parameter_type(x, "character")
   }
-  `òwó` <- function(x) { #nolint
+  `owo` <- function(x) { #nolint
     check_parameter_length(x, 1)
   }
   testthat::expect_null(uwu(""))
-  testthat::expect_null(òwó(""))
+  testthat::expect_null(owo(""))
   testthat::expect_error(
     uwu(42),
     regexp = "The 'x' parameter for uwu must be a character, not a numeric.",
     fixed = TRUE
   )
   testthat::expect_error(
-    òwó(c("", "")),
-    regexp = "The 'x' parameter for òwó must be 1 element long, not 2.",
+    owo(c("", "")),
+    regexp = "The 'x' parameter for owo must be 1 element long, not 2.",
     fixed = TRUE
   )
 

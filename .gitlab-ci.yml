@@ -20,14 +20,12 @@ code quality check:
       sloc_count=$(grep -P '^\s*[^#]{2,}' R/*.R | wc -l) ;
       ratio=$(bc <<< "scale=2;$doc_count/$sloc_count*100" | cut -d. -f1) ;
       echo "[documentation / code ratio = $ratio]"
-      if [ $ratio -lt 70 ];then
+      if [ $ratio -lt 90 ];then
         echo "Not enough documentation." ;
         exit 1 ;
-      elif [ $ratio -lt 75 ];then
+      elif [ $ratio -lt 95 ];then
         echo "Attention, the [documentation / code] ratio is very low" ;
       fi
-
-
 
 .parallel:
   parallel:
@@ -38,29 +36,23 @@ code quality check:
          - "4.1.3"
          - "4.0.5"
 
-rm prev docker images:
-  stage: deploy
-  tags: [shell]
-  extends: .parallel
-  script:
-      - docker rmi --force "${rocker/tidyverse}-${R_VERSION}"
-
 Build docker image:
   stage: build
   tags: [shell]
+  extends: .parallel
   script:
     - |
       echo "==================================";
       echo "[info] Building Docker image for $DOCKER_IMAGE ";
       docker build \
         --build-arg="R_VERSION=${R_VERSION}" \
-        --tag "$DOCKER_IMAGE" \
+        --tag "$DOCKER_IMAGE-$R_VERSION" \
         . ;
 
 checking:
   needs: ["Build docker image"]
   stage: check
-  image: $DOCKER_IMAGE
+  image: $DOCKER_IMAGE-4.3.1
   allow_failure: true
   script:
     - R -q -e "devtools::check('$CI_PROJECT_DIR')"
@@ -75,7 +67,8 @@ testing:
   needs: [checking]
   stage: test
   only: [dev,main]
-  image: $DOCKER_IMAGE
+  extends: .parallel
+  image: $DOCKER_IMAGE-$R_VERSION
   allow_failure: true
   when: on_success
   script:
@@ -92,8 +85,8 @@ testing:
 pages:
   needs: [testing]
   stage: deploy
-  only: [main]
-  image: $DOCKER_IMAGE
+  only: [dev,main]
+  image: $DOCKER_IMAGE-4.3.1
   dependencies: [testing]
   script:
     - ls
