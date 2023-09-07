@@ -428,3 +428,142 @@ reproduce_id <- function(data_matrix, metadata, metadata_type, id_match) {
   # return datasets - - - - - - - - - - -
   return(list(dataMatrix = data_matrix, Metadata = metadata))
 }
+
+#' @title Import two W4M tables
+#'
+#' @description import2
+#' Function to import a metadata table file and its corresponding
+#' dataMatrix file.
+#' import2 performs checks to ensure the identifiers match between
+#' the two tables and stops with an explicit error message in case
+#' identifiers do not match.
+#'
+#' @param pathDM a path to a file corresponding to the dataMatrix
+#' @param pathMeta a path to a file corresponding to the metadata table
+#' @param typeMeta "sample" or "variable" depending on the metadata content
+#' @disable_comm a \code{boolean} with default to \code{TRUE} to indicate
+#' whether the comment character \code{#} should be disabled as a comment tag
+#' for the import of the metadata file; when \code{TRUE}, \code{#} in the
+#' metadata table's columns will be considered as any other character.
+#' @return a \code{list} containing two elements:
+#'  - dataMatrix a \code{data.frame} corresponding to the imported dataMatrix table;
+#'  - metadata a \code{data.frame} corresponding to the imported metadata table
+#'
+#' @examples
+#' \donttest{
+#'
+#' dm_path <- system.file(
+#'   "extdata",
+#'   "mini_datamatrix.txt",
+#'   package="W4MRUtils"
+#' )
+#' meta_path <- system.file(
+#'   "extdata",
+#'   "mini_variablemetadata.txt",
+#'   package="W4MRUtils"
+#' )
+#'
+#' ## import considering # is not a comment character
+#' A <- W4MRUtils::import2(dm_path, meta_path, "variable")
+#' print(A)
+#'
+#' ## import considering # is a comment character
+#' B <- W4MRUtils::import2(dm_path, meta_path, "variable", disable_comm = FALSE)
+#' print(B)
+#' }
+#'
+#' @author M.Petera
+#'
+#' @export
+import2 <- function(pathDM, pathMeta, typeMeta, disable_comm = TRUE){
+  input_check <- c(
+    ifelse(is.character(pathDM), "", "/!\\ The input dataMatrix path parameter is not a character string.\n"),
+    ifelse(is.character(pathMeta), "", "/!\\ The input metadata file path parameter is not a character string.\n"),
+    ifelse(typeMeta %in% c("sample", "variable"), "", "/!\\ The input metadata type parameter is not one of 'sample' and 'variable'.\n"),
+    ifelse(is.logical(disable_comm), "", "/!\\ The input disable_comm parameter is not one of 'TRUE' and 'FALSE'. \n"))
+  if(sum(input_check == "") != 4) {
+    W4MRUtils::check_err(input_check)
+  }
+  comm_option <- ifelse(disable_comm, "", "#")
+  # Table import
+  DM <- read.table(pathDM, header = TRUE, sep = "\t", check.names = FALSE)
+  meta <- read.table(pathMeta, header = TRUE, sep = "\t", check.names = FALSE, comment.char = comm_option)
+  # Table match check
+  table_check <- W4MRUtils::match2(DM, meta, typeMeta)
+  W4MRUtils::check_err(table_check)
+  # Return
+  return(list(dataMatrix = DM, metadata = meta))
+}
+
+#' @title Import the three W4M tables
+#'
+#' @description import3
+#' Function to import the three W4M tables from files
+#' (dataMatrix, sampleMetadata, variableMetadata)
+#' import3 performs checks to ensure the identifiers match between
+#' the three tables and stops with an explicit error message in case
+#' identifiers do not match.
+#'
+#' @param pathDM a path to a file corresponding to the dataMatrix
+#' @param pathSM a path to a file corresponding to the sampleMetadata
+#' @param pathVM a path to a file corresponding to the variableMetadata
+#' @disable_comm a \code{boolean} with default to \code{TRUE} to indicate
+#' whether the comment character \code{#} should be disabled as a comment tag
+#' for the import of the metadata files; when \code{TRUE}, \code{#} in the
+#' metadata table's columns will be considered as any other character.
+#' @return a \code{list} containing three elements:
+#'  - dataMatrix a \code{data.frame} corresponding to the imported dataMatrix table;
+#'  - sampleMetadata a \code{data.frame} corresponding to the imported sampleMetadata table;
+#'  - variableMetadata a \code{data.frame} corresponding to the imported variableMetadata table
+#'
+#' @examples
+#' \donttest{
+#'
+#' dm_path <- system.file(
+#'   "extdata",
+#'   "mini_datamatrix.txt",
+#'   package="W4MRUtils"
+#' )
+#' vm_path <- system.file(
+#'   "extdata",
+#'   "mini_variablemetadata.txt",
+#'   package="W4MRUtils"
+#' )
+#' sm_path <- system.file(
+#'   "extdata",
+#'   "mini_samplemetadata.txt",
+#'   package="W4MRUtils"
+#' )
+#'
+#' ## import considering # is not a comment character
+#' A <- W4MRUtils::import3(dm_path, sm_path, vm_path)
+#' print(A)
+#'
+#' ## import considering # is a comment character
+#' B <- W4MRUtils::import3(dm_path, sm_path, vm_path, disable_comm = FALSE)
+#' print(B)
+#' }
+#'
+#' @author M.Petera
+#'
+#' @export
+import3 <- function(pathDM, pathSM, pathVM, disable_comm = TRUE){
+  input_check <- c(
+    ifelse(is.character(pathDM), "", "/!\\ The input dataMatrix path parameter is not a character string.\n"),
+    ifelse(is.character(pathSM), "", "/!\\ The input sampleMetadata file path parameter is not a character string.\n"),
+    ifelse(is.character(pathVM), "", "/!\\ The input variableMetadata file path parameter is not a character string.\n"),
+    ifelse(is.logical(disable_comm), "", "/!\\ The input disable_comm parameter is not one of 'TRUE' and 'FALSE'. \n"))
+  if(sum(input_check == "") != 4) {
+    W4MRUtils::check_err(input_check)
+  }
+  comm_option <- ifelse(disable_comm, "", "#")
+  # Table import
+  DM <- read.table(pathDM, header = TRUE, sep = "\t", check.names = FALSE)
+  VM <- read.table(pathVM, header = TRUE, sep = "\t", check.names = FALSE, comment.char = comm_option)
+  SM <- read.table(pathSM, header = TRUE, sep = "\t", check.names = FALSE, comment.char = comm_option)
+  # Table match check
+  table_check <- W4MRUtils::match3(DM, SM, VM)
+  W4MRUtils::check_err(table_check)
+  # Return
+  return(list(dataMatrix = DM, sampleMetadata = SM, variableMetadata = VM))
+}

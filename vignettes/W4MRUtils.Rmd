@@ -7,6 +7,76 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Introduction: package history and purpose
+
+Workflow4Metabolomics (W4M) provides tools to help people to process metabolomic datasets.
+Its preferred chanel is the web-based interface [Galaxy](https://galaxyproject.org/),
+particularly suited for analysts with no skill regarding software programing nor programing language in general.
+Galaxy also has the advantage to be compatible with a large variety of languages, enabling to combine
+tools coded in various programing languages, which is a huge advantage regarding to the diversity of steps
+(and thus tools) needed for comprehensive metabolomic data processing.
+
+Nonetheless, a significant part of the tools provided by W4M are coded using R.
+Due to the diversity of tools, W4M chose to adopt common standards accross its tools,
+in particular regarding data table formats and basics data checks.
+It also intents to gather utilitary functions to help the construction of R-based Galaxy tools using W4M standards,
+along with functions to easily handle basic actions given the W4M table data format.
+
+The `W4MRUtils` package is meant to gather such functions, to enable W4M R-based Galaxy tools to
+have easy access to these standardised approaches.
+
+# How to use the package
+
+## What you should know about the W4M standards
+
+Some functions are closely linked to Galaxy integration as the `parse_args` function for example,
+but a large variety of functions can be helpful independently of Galaxy.
+To use these functions, it is usefull to understand the choices made by W4M,
+in particular regarding the formats, as these will be often used as input parameters for functions.
+
+The main format aspect to consider is the W4M 3-tables format.
+Metabolomic data, similarly to other types of 'omics data, can be divided in 3 main types of information:
+
+- analysed samples' information (sample meta-data, `sampleMetadata` in short): it corresponds to information
+regarding the samples that have been analysed with an analytical device; this covers any information about the samples
+that is not the analytical measures themselves (examples: studied biological groups, batches of analysis)
+- analytical measures (`dataMatrix` in short): it corresponds to the intensities measured
+using the analytical device used; it is a table with intensity values for each sample and for each analytical variable
+- analytical variables' information (variable meta-data, `variableMetadata` in short): it corresponds to
+information regarding the variables that have been measured through the analytical device; this covers
+any information about the variables that is not the analytical measures themselves (examples: m/z ratios for MS data,
+chemical shift for NMR data)
+
+These 3 types of information can be stocked in 3 distinct tables.
+In the package, the chosen format is the following:
+
+- sampleMetadata: the samples' identifiers are positioned as the first column in the table; the table can contain
+as many columns as you want, each colum being a specific information about samples (*e.g.* a header indicating 'Groups'
+and the content being 'A' or 'B' depending on each sample's affiliation)
+- variableMetadata: same idea than the sampleMetadata, but for analytical variables; thus the analytical variables'
+identifiers are positiones as the first column in the table, and additional columns correspond to information about
+the variables (*e.g.* the p-values associated to each variable regarding a given test applied on each variable)
+- dataMatrix: the analytical variables' identifiers are positioned as the first column, and the samples' identifiers
+are given as the header; the remaining cells are quantitative values corresponding to the measured intensities
+
+These 3 tables are standard inputs and/or outputs for several of the functions found in this package.
+Consequently, when you need to specify sample-wise or variable-wise information, you will generally be invited to
+stock it in one of these tables (same goes for outputs of functions, where to find the generated information).
+
+## About the types of functions in the package
+
+There are several types of functions in the package.
+Globally, you will find functions enabling the following:
+
+- importing and/or checking parameters (in a Galaxy-oriented way)
+- importing and/or checking data tables (in a W4M-oriented way)
+- managing identifiers and/or formats
+- managing computing information and/or error messages (in a user-targeted way)
+
+
+
+# ??
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
