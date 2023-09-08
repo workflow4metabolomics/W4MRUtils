@@ -21,6 +21,16 @@ values into logical if their value is "TRUE" or "FALSE".}
 
 \item{convert_numerics}{logical - tells the function to convert
 values into numeric if possible.}
+
+\item{strip_trailing_dash}{\itemize{
+\item tells whether to remove trailing hyphens from
+the start of the parameter name
+}}
+
+\item{replace_dashes}{\itemize{
+\item tells whether to turn trailing hyphens into
+underscores
+}}
 }
 \value{
 a named \code{list} object containing the input parameters in values

@@ -89,7 +89,7 @@ source_local <- function(
   }
   base_dir <- get_base_dir()
   files <- c(...)
-  absolute_filter <- grepl("^/", files, perl = TRUE)
+  absolute_filter <- grepl("^/|[a-zA-Z]+:\\\\", files, perl = TRUE)
   non_absolutes <- file.path(base_dir, files[!absolute_filter])
   result <- lapply(
     c(files[absolute_filter], non_absolutes),
