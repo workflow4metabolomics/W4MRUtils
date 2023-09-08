@@ -1,9 +1,9 @@
 Package: W4MRUtils
 Title: Utils List for W4M - Workflow for Metabolomics
 Version: 0.0.1
-Authors@R: 
-    person("Lain", "Pavot", "", "lain.pavot@inrae.fr", role = c("aut", "cre"))
-    person("Melanie", "Petera", "", "melanie.petera@inrae.fr", role = c("aut"))
+Authors@R: c(
+    person("Lain", "Pavot", "", "lain.pavot@inrae.fr", role = c("aut", "cre")),
+    person("Melanie", "Petera", "", "melanie.petera@inrae.fr", role = c("aut")))
 Description: Provides a set of utility function to prevent the spread of
     utilities script in W4M (Workflow4Metabolomics) scripts, and centralize
     them in a single package.
