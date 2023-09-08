@@ -200,6 +200,18 @@ optparse_list <- function(
 #' Each parameter is the result of either optparse_flag, optparse_numeric,
 #' optparse_integer, optparse_character or optparse_list
 #'
+#' @param fix_hyphens logical - whether to turn underscores into hyphens or not
+#' @param fix_dots logical - whether to turn points into hyphens or not
+#' @param add_trailing_hyphens logical - whether to add trailing hyphens
+#'   if missing
+#' @param args \code{list} - The parameters from the \code{commandArgs} function
+#' @param no_optparse logical - INTERNAL Tells whether to use optparse library or not
+#' @param ... parameters definition. Must be the result of either those functions:
+#'   - optparse_flag
+#'   - optparse_numeric
+#'   - optparse_integer
+#'   - optparse_character
+#'   - optparse_list
 #' @examples
 #'
 #' args <- optparse_parameters(
