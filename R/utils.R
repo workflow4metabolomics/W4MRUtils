@@ -86,6 +86,7 @@ printf <- function(...) {
 #' printfp calls paste and sprintf of its parameters to build the error message
 #' and prints with the given message
 #' @inheritDotParams base::paste
+#' @param x a list of format string to concatenate before using sprintf on it.
 #' @return NULL
 #' @examples
 #'
