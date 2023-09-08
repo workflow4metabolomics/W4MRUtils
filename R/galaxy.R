@@ -3,6 +3,7 @@
 #' @importFrom utils str
 #' @importFrom utils packageVersion
 #' @importFrom utils sessionInfo
+#' @importFrom rlang enexpr
 #'
 NULL
 
@@ -35,6 +36,9 @@ mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
 #'   - args, a list of command line parameters
 #'   - logger, the logger created for the tool
 #'
+#' @param tool_name - The name of the tool
+#' @param func - The function to be run, after galaxy header is displayed
+#' @param ... - Parameters propagated to [run_galaxy_processing]
 #' @seealso [run_galaxy_processing]
 #'
 #' @author L.Pavot
@@ -75,6 +79,23 @@ run_galaxy_function <- function(tool_name, func, ...) {
 #' these paths will be source'd, so the code has access to functions
 #' defined in these scripts.
 #'
+#' @param tool_name - Mandatory. The name of the tool to run.
+#' @param code - Mandatory. The code to run the tool
+#' @param tool_version - The version number of the tool to run.
+#' @param unmangle_parameters - Whether or not to revert mangling from galaxy
+#'   useful if galaxy produces strange command parameters.
+#'   Not necessary, but produces more explicit outputs.
+#' @param args - The result of [commandArgs] function, or from
+#'   the [optparse_parameters] function.
+#'   Can be NULL. In this case, uses [commandArgs] to get the args.
+#' @param logger - You can provide a logger to use. If not provided,
+#'    a logger will be created with the tool's name.
+#' @param source_files - You may provide some paths to source before executing
+#'    the provided code.
+#' @param env - You may provide a environment object to execute the code
+#'   within.
+#' @param do_traceback - logical - tells whether to produce a traceback in
+#'   case of error.
 #' @examples
 #'
 #' write_r_file_with_content <- function(content) {
@@ -282,6 +303,14 @@ run_galaxy_processing <- function(
 #' @examples
 #'
 #' show_galaxy_header("Tool Name", "1.2.0")
+#' show_galaxy_header(
+#'   tool_name = "Tool Name",
+#'   tool_version = "1.2.0",
+#'   logger = get_logger("Some Tool"),
+#'   show_start_time = FALSE,
+#'   show_sys = FALSE,
+#'   show_parameters = FALSE
+#' )
 #'
 #' @author L.Pavot
 #' @export
@@ -342,6 +371,8 @@ show_galaxy_header <- function(
 #'   running tool's version.
 #' @param logger a \code{get_logger("name")} instance - if provided, the
 #'   galaxy footer if output from the logger.
+#' @param show_packages logical - Tells whether to display loaded packages
+#'   and attached packages.
 #' @param ellapsed NULL or a \code{character(1)} with execution duration.
 #' @return NULL
 #'
@@ -349,7 +380,15 @@ show_galaxy_header <- function(
 #'
 #' @examples
 #'
-#' show_galaxy_header("Tool Name", "1.2.0")
+#' show_galaxy_footer("Tool Name", "1.2.0")
+#'
+#' show_galaxy_footer(
+#'   tool_name = "Tool Name",
+#'   tool_version = "1.2.0",
+#'   logger = get_logger("Some Tool"),
+#'   show_packages = FALSE,
+#'   ellapsed = "14.5 seconds"
+#' )
 #'
 #' @author L.Pavot
 #' @export
@@ -410,16 +449,21 @@ get_r_env <- function() {
   env_vars[grepl(x = names(env_vars), pattern = "^R_.*$")]
 }
 
+#' show_sys - prints env variables related to R
+#' @description
+#' prints env variables related to R
+#'
+#' @return NULL
+#'
+#' @examples
+#'
+#' show_sys()
+#'
+#' @author L.Pavot
 #' @export
 show_sys <- function() {
   print(get_r_env())
 }
-
-#' @name chocisse
-#' @description
-#' in case you can't spell "show sys" lol
-#' @export
-chocisse <- show_sys ## lol
 
 #' in_galaxy_env - check if the script has been run by galaxy
 #' @description
