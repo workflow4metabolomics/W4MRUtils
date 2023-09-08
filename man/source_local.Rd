@@ -72,5 +72,5 @@ processing(list(), get_logger("Tool Name"))
 
 }
 \seealso{
-\link{"source"}
+\code{\link[=source]{source()}}
 }

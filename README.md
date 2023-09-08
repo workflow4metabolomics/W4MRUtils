@@ -12,34 +12,31 @@ It contains some utility functions that will help you in common tasks.
 
 ## Parameters
 
-  - [Parsing parameters with
-    parse\_args](./docs/reference/parse_args.html) (easier)
-  - [Parsing parameters with
-    optparse](./docs/reference/optparse_parameters.html) (better)
-  - [Enforce checking on
-    parameters](./docs/reference/check_param_type_n_length.html)
+  - Parsing parameters with parse\_args (easier)
+  - Parsing parameters with optparse\_parameters (better)
+  - Enforce checking on parameters with check\_param\_type\_n\_length
 
 ## R script chores
 
-  - [Silently load a package](./docs/reference/shy_lib.html)
-  - [Sourcing relative file](./docs/reference/source_local.html)
+  - Silently load a package with shy\_lib
+  - Sourcing relative file with source\_local
 
 ## Galaxy
 
-  - [Am I in a galaxy env?](./docs/reference/in_galaxy_env.html)
-  - [Show log headers](./docs/reference/show_galaxy_header.html)
-  - [Show log footer](./docs/reference/show_galaxy_footer.html)
-  - [Execute a function](./docs/reference/run_galaxy_processing.html)
-  - [Restore parameters names, modified by
-    galaxy](./docs/reference/unmangle_galaxy_param.html)
+  - Am I in a galaxy env? see in\_galaxy\_env
+  - Show log headers with show\_galaxy\_header
+  - Show log footer with show\_galaxy\_footer
+  - Execute a function with run\_galaxy\_processing
+  - Restore parameters names, modified by galaxy with
+    unmangle\_galaxy\_param
 
 ## Logfiles
 
-  - [What is a logger?](./docs/articles/logging.html#what-is-a-logger)
-  - [How to create a
-    logger?](./docs/articles/logging.html#how-to-create-a-logger)
-  - [How to create a log
-    file?](./docs/articles/logging.html#how-to-create-a-log-file)
+  - What is a logger? - See logging section what-is-a-logger)
+  - How to create a logger? - See logging section
+    how-to-create-a-logger)
+  - How to create a log file? - See logging section
+    how-to-create-a-log-file)
 
 ## TODO
 
@@ -50,6 +47,8 @@ Do the documentation and the referencing of the documentation for:
   - check\_err
   - match2
   - match3
+  - import2
+  - import3
   - df\_is
   - df\_force\_numeric
   - df\_read\_table
