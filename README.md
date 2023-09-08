@@ -1,6 +1,8 @@
 
 # W4MRUtils
 
+  - **VERSION**: 1.0.0
+
 <!-- badges: start -->
 
 <!-- badges: end -->
