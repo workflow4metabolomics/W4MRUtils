@@ -10,16 +10,16 @@ vignette: >
 # Introduction: package history and purpose
 
 Workflow4Metabolomics (W4M) provides tools to help people to process metabolomic datasets.
-Its preferred chanel is the web-based interface [Galaxy](https://galaxyproject.org/),
+Its preferred Chanel is the web-based interface [Galaxy](https://galaxyproject.org/),
 particularly suited for analysts with no skill regarding software programing nor programing language in general.
 Galaxy also has the advantage to be compatible with a large variety of languages, enabling to combine
 tools coded in various programing languages, which is a huge advantage regarding to the diversity of steps
 (and thus tools) needed for comprehensive metabolomic data processing.
 
 Nonetheless, a significant part of the tools provided by W4M are coded using R.
-Due to the diversity of tools, W4M chose to adopt common standards accross its tools,
+Due to the diversity of tools, W4M chose to adopt common standards across its tools,
 in particular regarding data table formats and basics data checks.
-It also intents to gather utilitary functions to help the construction of R-based Galaxy tools using W4M standards,
+It also intents to gather utility functions to help the construction of R-based Galaxy tools using W4M standards,
 along with functions to easily handle basic actions given the W4M table data format.
 
 The `W4MRUtils` package is meant to gather such functions, to enable W4M R-based Galaxy tools to
@@ -31,7 +31,7 @@ have easy access to these standardised approaches.
 
 Some functions are closely linked to Galaxy integration as the `parse_args` function for example,
 but a large variety of functions can be helpful independently of Galaxy.
-To use these functions, it is usefull to understand the choices made by W4M,
+To use these functions, it is useful to understand the choices made by W4M,
 in particular regarding the formats, as these will be often used as input parameters for functions.
 
 The main format aspect to consider is the W4M 3-tables format.
@@ -51,10 +51,10 @@ These 3 types of information can be stocked in 3 distinct tables.
 In the package, the chosen format is the following:
 
 - sampleMetadata: the samples' identifiers are positioned as the first column in the table; the table can contain
-as many columns as you want, each colum being a specific information about samples (*e.g.* a header indicating 'Groups'
+as many columns as you want, each column being a specific information about samples (*e.g.* a header indicating 'Groups'
 and the content being 'A' or 'B' depending on each sample's affiliation)
 - variableMetadata: same idea than the sampleMetadata, but for analytical variables; thus the analytical variables'
-identifiers are positiones as the first column in the table, and additional columns correspond to information about
+identifiers are positioned as the first column in the table, and additional columns correspond to information about
 the variables (*e.g.* the p-values associated to each variable regarding a given test applied on each variable)
 - dataMatrix: the analytical variables' identifiers are positioned as the first column, and the samples' identifiers
 are given as the header; the remaining cells are quantitative values corresponding to the measured intensities
@@ -75,7 +75,7 @@ Globally, you will find functions enabling the following:
 
 
 
-# ??
+# Usage example for galaxy tools
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
