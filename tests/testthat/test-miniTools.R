@@ -172,3 +172,206 @@ test_that("Testing reproduce_id - sample", {
   testthat::expect_identical(reproduced$dataMatrix, datamatrix_a)
   testthat::expect_identical(reproduced$Metadata, sample_meta_a)
 })
+
+test_that("Testing import2", {
+  dm_path <- system.file(
+    "extdata",
+    "mini_datamatrix.txt",
+    package = "W4MRUtils"
+  )
+  meta_path <- system.file(
+    "extdata",
+    "mini_variablemetadata.txt",
+    package = "W4MRUtils"
+  )
+  result <- import2(dm_path, meta_path, "variable")
+  testthat::expect_equal(
+    row.names(result$dataMatrix),
+    row.names(result$metadata)
+  )
+  testthat::expect_equal(
+    colnames(result$dataMatrix), c(
+    "data", "j 785", "y54j 68y4j6", "5-6 4", "hrh",
+    "5h -", "3", "t564", "t54 66", "y6y",
+    "t6 5h", "(5y", "g51", "(", "6",
+    "98 j7-0", "06654h", "60"
+  ))
+  testthat::expect_equal(nrow(result$dataMatrix), 17)
+  testthat::expect_equal(nrow(result$metadata), 17)
+  testthat::expect_length(result, 2)
+  testthat::expect_named(result, c("dataMatrix", "metadata"))
+  testthat::expect_named(result$metadata)
+})
+
+test_that("Testing import3", {
+  dm_path <- system.file(
+    "extdata",
+    "mini_datamatrix.txt",
+    package = "W4MRUtils"
+  )
+  vm_path <- system.file(
+    "extdata",
+    "mini_variablemetadata.txt",
+    package = "W4MRUtils"
+  )
+  sm_path <- system.file(
+    "extdata",
+    "mini_samplemetadata.txt",
+    package = "W4MRUtils"
+  )
+  result <- import3(dm_path, sm_path, vm_path)
+  testthat::expect_equal(
+    result$dataMatrix[, 1],
+    result$variableMetadata[, 1]
+  )
+  testthat::expect_equal(
+    colnames(result$dataMatrix),
+    c("data", result$sampleMetadata[, 1])
+  )
+  testthat::expect_equal(
+    colnames(result$dataMatrix), c(
+    "data", "j 785", "y54j 68y4j6", "5-6 4", "hrh",
+    "5h -", "3", "t564", "t54 66", "y6y",
+    "t6 5h", "(5y", "g51", "(", "6",
+    "98 j7-0", "06654h", "60"
+  ))
+  testthat::expect_equal(nrow(result$dataMatrix), 17)
+  testthat::expect_equal(nrow(result$variableMetadata), 17)
+  testthat::expect_length(result, 3)
+  testthat::expect_named(
+    result,
+    c("dataMatrix", "sampleMetadata", "variableMetadata")
+  )
+  testthat::expect_named(result$variableMetadata)
+})
+
+test_that("Testing import3 disable_comm = FALSE", {
+  dm_path <- system.file(
+    "extdata",
+    "mini_datamatrix.txt",
+    package = "W4MRUtils"
+  )
+  vm_path <- system.file(
+    "extdata",
+    "mini_variablemetadata.txt",
+    package = "W4MRUtils"
+  )
+  sm_path <- system.file(
+    "extdata",
+    "mini_samplemetadata.txt",
+    package = "W4MRUtils"
+  )
+  result <- import3(dm_path, sm_path, vm_path, disable_comm = FALSE)
+  testthat::expect_true(all(grepl(
+    "^Comp\\d+$",
+    result$variableMetadata$E,
+    perl = TRUE
+  )))
+})
+
+test_that("Testing import2 errors", {
+  testthat::expect_error(
+    import2(42, "", "sample"),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input dataMatrix path parameter is not a character string.\n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import2("", 42, "variable"),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input metadata file path parameter is ",
+      "not a character string.\n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import2("", "", 42),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input metadata type parameter is ",
+      "not one of 'sample' and 'variable'.\n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import2("", "", "sample", 42),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input disable_comm parameter is ",
+      "not one of 'TRUE' and 'FALSE'. \n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import2("", disable_comm = 42, "", "variable"),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input disable_comm parameter is ",
+      "not one of 'TRUE' and 'FALSE'. \n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+})
+
+
+test_that("Testing import3 errors", {
+  testthat::expect_error(
+    import3(42, "", ""),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input dataMatrix path parameter is ",
+      "not a character string.\n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import3("", 42, ""),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input sampleMetadata file path parameter is ",
+      "not a character string.\n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import3("", "", 42),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input variableMetadata file path parameter is ",
+      "not a character string.\n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import3("", "", "", 42),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input disable_comm parameter is not ",
+      "one of 'TRUE' and 'FALSE'. \n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    import3("", disable_comm = 42, "", ""),
+    paste0(
+      "\n- - - - - - - - -\n",
+      "/!\\ The input disable_comm parameter is not ",
+      "one of 'TRUE' and 'FALSE'. \n",
+      "\n- - - - - - - - -\n"
+    ),
+    fixed = TRUE
+  )
+})
+
