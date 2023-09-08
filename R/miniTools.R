@@ -72,7 +72,7 @@ NULL
 #' ## the function is accessible here
 #' processing(list(), get_logger("Tool Name"))
 #'
-#' @seealso ["source"]
+#' @seealso [source()]
 #'
 #' @export
 source_local <- function(
@@ -173,6 +173,10 @@ shy_lib <- function(...) {
 #'  values into logical if their value is "TRUE" or "FALSE".
 #' @param convert_numerics logical - tells the function to convert
 #'  values into numeric if possible.
+#' @param strip_trailing_dash - tells whether to remove trailing hyphens from
+#'   the start of the parameter name
+#' @param replace_dashes - tells whether to turn trailing hyphens into
+#'   underscores
 #' @return a named \code{list} object containing the input parameters in values
 #'  and the parameters names in names
 #'
@@ -441,7 +445,7 @@ reproduce_id <- function(data_matrix, metadata, metadata_type, id_match) {
 #' @param pathDM a path to a file corresponding to the dataMatrix
 #' @param pathMeta a path to a file corresponding to the metadata table
 #' @param typeMeta "sample" or "variable" depending on the metadata content
-#' @disable_comm a \code{boolean} with default to \code{TRUE} to indicate
+#' @param disable_comm a \code{boolean} with default to \code{TRUE} to indicate
 #' whether the comment character \code{#} should be disabled as a comment tag
 #' for the import of the metadata file; when \code{TRUE}, \code{#} in the
 #' metadata table's columns will be considered as any other character.
@@ -465,11 +469,13 @@ reproduce_id <- function(data_matrix, metadata, metadata_type, id_match) {
 #'
 #' ## import considering # is not a comment character
 #' A <- W4MRUtils::import2(dm_path, meta_path, "variable")
-#' print(A)
+#' print(A$dataMatrix[1:5, 1:5])
+#' print(A$metadata[1:5, ])
 #'
 #' ## import considering # is a comment character
 #' B <- W4MRUtils::import2(dm_path, meta_path, "variable", disable_comm = FALSE)
-#' print(B)
+#' print(B$dataMatrix[1:5, 1:5])
+#' print(B$metadata[1:5, ])
 #' }
 #'
 #' @author M.Petera
@@ -507,7 +513,7 @@ import2 <- function(pathDM, pathMeta, typeMeta, disable_comm = TRUE){
 #' @param pathDM a path to a file corresponding to the dataMatrix
 #' @param pathSM a path to a file corresponding to the sampleMetadata
 #' @param pathVM a path to a file corresponding to the variableMetadata
-#' @disable_comm a \code{boolean} with default to \code{TRUE} to indicate
+#' @param disable_comm a \code{boolean} with default to \code{TRUE} to indicate
 #' whether the comment character \code{#} should be disabled as a comment tag
 #' for the import of the metadata files; when \code{TRUE}, \code{#} in the
 #' metadata table's columns will be considered as any other character.
@@ -537,11 +543,15 @@ import2 <- function(pathDM, pathMeta, typeMeta, disable_comm = TRUE){
 #'
 #' ## import considering # is not a comment character
 #' A <- W4MRUtils::import3(dm_path, sm_path, vm_path)
-#' print(A)
+#' print(A$dataMatrix[1:5, 1:5])
+#' print(A$sampleMetadata[1:5, ])
+#' print(A$variableMetadata[1:5, ])
 #'
 #' ## import considering # is a comment character
 #' B <- W4MRUtils::import3(dm_path, sm_path, vm_path, disable_comm = FALSE)
-#' print(B)
+#' print(B$dataMatrix[1:5, 1:5])
+#' print(B$sampleMetadata[1:5, ])
+#' print(B$variableMetadata[1:5, ])
 #' }
 #'
 #' @author M.Petera
