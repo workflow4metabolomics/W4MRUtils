@@ -13,4 +13,5 @@ to make things easier (lightening code, reducing verbose...)
 
 V0: script structure + first functions
 V1: addition of functions to handle special characters in identifiers
+V2: addition of a merging function
 }
