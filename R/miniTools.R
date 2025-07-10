@@ -206,7 +206,7 @@ parse_args <- function(
   replace_dashes = TRUE
 ) {
   warning(
-    "Please, use the 'optparse' library instead of the 'parse_args' function."
+    "Please, use the 'optparse' library instead of the 'parse_args' function in the future."
   )
   if (is.null(args)) {
     args <- commandArgs()
