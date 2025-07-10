@@ -79,6 +79,7 @@ Do the documentation and the referencing of the documentation for:
  - df_is
  - df_force_numeric
  - df_read_table
+ - generic_filter
 
 
 ## Installation

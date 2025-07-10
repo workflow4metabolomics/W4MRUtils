@@ -53,6 +53,7 @@ Do the documentation and the referencing of the documentation for:
   - df\_is
   - df\_force\_numeric
   - df\_read\_table
+  - generic\_filter
 
 ## Installation
 
