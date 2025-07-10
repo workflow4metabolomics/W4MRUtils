@@ -11,6 +11,7 @@
 #'
 #' V0: script structure + first functions
 #' V1: addition of functions to handle special characters in identifiers
+#' V2: addition of a merging function
 #'
 NULL
 
@@ -205,7 +206,7 @@ parse_args <- function(
   replace_dashes = TRUE
 ) {
   warning(
-    "Please, use the 'optparse' library instead of the 'parse_args' function."
+    "Please, use the 'optparse' library instead of the 'parse_args' function in the future."
   )
   if (is.null(args)) {
     args <- commandArgs()
@@ -576,4 +577,35 @@ import3 <- function(pathDM, pathSM, pathVM, disable_comm = TRUE){
   W4MRUtils::check_err(table_check)
   # Return
   return(list(dataMatrix = DM, sampleMetadata = SM, variableMetadata = VM))
+}
+
+#' @title Merging a dataMatrix with a metadata file
+#'
+#' @description metab_merge
+#' Function to merge the dataMatrix table with one of its corresponding
+#' metadata table (sampleMetadata or variableMetadata)
+#'
+#' @param Data.frame corresponding to the dataMatrix you want to merge with a metadata table
+#' @param meta Data.frame corresponding to the metadata table you want to merge with the dataMatrix
+#' @param metype Character string indicating the type of metadata table used; should be one between "sample" and "variable"
+#' @return a \code{data.frame} corresponding to a combined table with both intensities and metadata
+#'
+#' @author M.Petera
+#'
+#' @export
+metab_merge <- function(DM, meta, metype = "sample") {
+  # Checking tables match regarding identifiers
+  table.check <- W4MRUtils::match2(DM, meta, metype)
+  W4MRUtils::check_err(table.check)
+  # Transposing if needed
+  if (metype == "sample") {
+    ori.DM <- DM
+    rownames(DM) <- DM[, 1]
+    DM <- DM[, -1]
+    DM <- t(DM)
+    DM <- data.frame(sample = row.names(DM), DM, check.names = FALSE)
+    rownames(DM) <- NULL
+  }
+  comb.data <- merge(x = meta, y = DM, by.x = 1, by.y = 1)
+  return(comb.data)
 }

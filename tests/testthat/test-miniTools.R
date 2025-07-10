@@ -58,7 +58,7 @@ test_that("Testing parse_args", {
     testthat::expect_identical(parse_args(), list()),
     regex = paste(
       "Please, use the 'optparse' library instead of the",
-      "'parse_args' function."
+      "'parse_args' function in the future."
     ),
     fixed = TRUE
   )
@@ -375,3 +375,13 @@ test_that("Testing import3 errors", {
   )
 })
 
+test_that("Testing metab_merge - sample", {
+
+  datamatrix_a <- data.frame(id = c("V1", "V2", "V3"), a = 2:4, b = 3:5, c = 4:6)
+  sample_meta_a <- data.frame(id = c("a", "b", "c"), C1 = 2:4, C2 = 3:5)
+  combined <- metab_merge(datamatrix_a, sample_meta_a, "sample")
+
+  expected <- data.frame(id = c("a", "b", "c"), C1 = 2:4, C2 = 3:5, V1 = 2:4, V2 = 3:5, V3 = 4:6)
+
+  testthat::expect_identical(combined, expected)
+})
