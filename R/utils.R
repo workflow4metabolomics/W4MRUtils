@@ -431,27 +431,22 @@ check_parameter_length <- function(
 
 #' @name check_one_character
 #' @title check_one_character
-#' @inherit check_param_type_n_length
 #' @export
 NULL
 #' @name check_one_integer
 #' @title check_one_integer
-#' @inherit check_param_type_n_length
 #' @export
 NULL
 #' @name check_one_logical
 #' @title check_one_logical
-#' @inherit check_param_type_n_length
 #' @export
 NULL
 #' @name check_one_numeric
 #' @title check_one_numeric
-#' @inherit check_param_type_n_length
 #' @export
 NULL
 #' @name check_one_complex
 #' @title check_one_complex
-#' @inherit check_param_type_n_length
 #' @export
 NULL
 for (.type__ in c(
