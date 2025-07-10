@@ -58,7 +58,7 @@ test_that("Testing parse_args", {
     testthat::expect_identical(parse_args(), list()),
     regex = paste(
       "Please, use the 'optparse' library instead of the",
-      "'parse_args' function."
+      "'parse_args' function in the future."
     ),
     fixed = TRUE
   )

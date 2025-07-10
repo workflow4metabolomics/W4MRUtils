@@ -202,7 +202,7 @@ generic_filter <- function(var.data,
   if(length(err.stock) > 1){
     stop(err.stock)
   }else{
-    return(list(dataMatrix = var.data, sampleMetadata = meta.var.data, variableMetadata = meta.samp.data)
+    return(list(dataMatrix = var.data, sampleMetadata = meta.samp.data, variableMetadata = meta.var.data))
   }
 
 }
