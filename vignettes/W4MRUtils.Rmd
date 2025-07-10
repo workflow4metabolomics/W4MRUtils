@@ -72,6 +72,7 @@ Globally, you will find functions enabling the following:
 - importing and/or checking data tables (in a W4M-oriented way)
 - managing identifiers and/or formats
 - managing computing information and/or error messages (in a user-targeted way)
+- merging a dataMatrix table with a corresponding metadata table
 
 
 
