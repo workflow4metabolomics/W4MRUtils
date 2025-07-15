@@ -39,7 +39,7 @@ NULL
 #' (i) "sample" or "variable" depending on the type of metadata you are filtering (i.e. the table that contains the column to filter),
 #' (ii) the name of the column to filter in the corresponding metadata table,
 #' (iii) the type of numerical filtering to apply, to be chosen from "lower", "upper", "extremity" and "between",
-#' (iv) the threshold to be used for filtering [in case the 'iii' argument is "extremity" or "between", it is the lower threshold],
+#' (iv) the threshold to be used for filtering (in case the 'iii' argument is "extremity" or "between", it is the lower threshold),
 #' and (v) in case the 'iii' argument is "extremity" or "between", the upper threshold. 
 #'
 #' @return a \code{list} containing the 3 tables, filtered according to the criteria input

@@ -14,6 +14,8 @@ comes which lines of log. See the example of usage bellow.}
 \item{recreate}{logical=FALSE tells whether to recreate the logger
 of the given name or not. Preferably, one should not recreate
 a new logger each time.}
+
+\item{...}{Parameters passed out to the W4MLogger() function}
 }
 \value{
 A new W4MLogger instance if it did not exist or if recreate is

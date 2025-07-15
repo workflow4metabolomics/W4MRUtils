@@ -7,11 +7,11 @@
 metab_merge(DM, meta, metype = "sample")
 }
 \arguments{
+\item{DM}{Data.frame corresponding to the dataMatrix you want to merge with a metadata table}
+
 \item{meta}{Data.frame corresponding to the metadata table you want to merge with the dataMatrix}
 
 \item{metype}{Character string indicating the type of metadata table used; should be one between "sample" and "variable"}
-
-\item{Data.frame}{corresponding to the dataMatrix you want to merge with a metadata table}
 }
 \value{
 a \code{data.frame} corresponding to a combined table with both intensities and metadata

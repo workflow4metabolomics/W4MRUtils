@@ -34,6 +34,7 @@ w4m_loggers__ <- new.env()
 #' @param recreate logical=FALSE tells whether to recreate the logger
 #' of the given name or not. Preferably, one should not recreate
 #' a new logger each time.
+#' @param ... Parameters passed out to the W4MLogger() function
 #' @return A new W4MLogger instance if it did not exist or if recreate is
 #' TRUE. Otherwise, a new W4MLogger instance.
 #'
