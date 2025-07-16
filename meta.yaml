@@ -1,4 +1,4 @@
-{% set version = "1.1.0" %}
+{% set version = "1.1.1" %}
 
 {% set git_repo_name = "W4MRUtils" %}
 {% set git_proto = "https" %}

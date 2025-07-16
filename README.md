@@ -1,7 +1,7 @@
 
 # W4MRUtils
 
-  - **VERSION**: 1.1.0
+  - **VERSION**: 1.1.1
 
 <!-- badges: start -->
 
