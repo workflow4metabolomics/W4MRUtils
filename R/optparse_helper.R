@@ -41,6 +41,7 @@ optparse_flag <- function(
 #' To be used with \code{optparse_parameters}. This function tells
 #' the provided parameter is to be parsed as an numeric.
 #' @inheritParams optparse_flag
+#' @inherit optparse_flag return
 #' @inherit optparse_flag seealso
 #' @examples
 #'
@@ -71,6 +72,7 @@ optparse_numeric <- function(
 #' To be used with \code{optparse_parameters}. This function tells
 #' the provided parameter is to be parsed as an integer.
 #' @inheritParams optparse_flag
+#' @inherit optparse_flag return
 #' @inherit optparse_flag seealso
 #' @examples
 #'
@@ -101,6 +103,7 @@ optparse_integer <- function(
 #' To be used with \code{optparse_parameters}. This function tells
 #' the provided parameter is to be parsed as a single string.
 #' @inheritParams optparse_flag
+#' @inherit optparse_flag return
 #' @inherit optparse_flag seealso
 #' @examples
 #'
@@ -134,6 +137,7 @@ optparse_character <- function(
 #' Each element must be separated by a separator. This separator must
 #' be the value given in the \code{sep} parameter
 #' @inheritParams optparse_flag
+#' @inherit optparse_flag return
 #' @inherit optparse_flag seealso
 #' @param of - This type of elements of this list
 #' @param sep - This character to split on, to get the list
@@ -212,6 +216,9 @@ optparse_list <- function(
 #'   - optparse_integer
 #'   - optparse_character
 #'   - optparse_list
+#' @return A list combining all the elements provided by the optparse_flag, optparse_numeric, 
+#'   optparse_integer, optparse_character and/or optparse_list arguments
+#' 
 #' @examples
 #'
 #' args <- optparse_parameters(

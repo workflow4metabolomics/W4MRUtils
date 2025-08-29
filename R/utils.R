@@ -5,7 +5,7 @@
 #' stopf calls sprintf of its parameters to build the error message
 #' and stops with the given message
 #' @inheritDotParams base::sprintf
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' tryCatch({
@@ -27,7 +27,7 @@ stopf <- function(...) {
 #' stopaste calls paste of its parameters to build the error message
 #' and stops with the given message
 #' @inheritDotParams base::paste
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' tryCatch({
@@ -48,7 +48,7 @@ stopaste <- function(...) {
 #' stopaste calls paste0 of its parameters to build the error message
 #' and stops with the given message
 #' @inheritDotParams base::paste0
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' tryCatch({
@@ -69,7 +69,7 @@ stopaste0 <- function(...) {
 #' printf calls sprintf of its parameters to build the error message
 #' and prints with the given message
 #' @inheritDotParams base::sprintf
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' file <- "/tmp/test"
@@ -87,7 +87,7 @@ printf <- function(...) {
 #' and prints with the given message
 #' @inheritDotParams base::paste
 #' @param x a list of format string to concatenate before using sprintf on it.
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' file <- "/tmp/test"
@@ -111,7 +111,7 @@ printfp <- function(x, ...) {
 #' printp calls sprintf of its parameters to build the error message
 #' and prints with the given message
 #' @inheritDotParams base::sprintf
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' file <- "/tmp/test"
@@ -128,7 +128,7 @@ printp <- function(...) {
 #' collapse does exactly when paste does, but default collapse = ""
 #' @param sep set the separator. Deafult is ""
 #' @param ... passed to [base::paste0()]
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' collapse(list("a message ", "in multiple", "parts"))
@@ -144,7 +144,7 @@ collapse <- function(..., sep = "") {
 #' collapse_lines() does exactly when paste does, but default collapse = "\\n"
 #' @param sep set the separator. Deafult is "\\n"
 #' @param ... passed to [base::paste0()]
-#' @return NULL
+#' @return \code{NULL}
 #' @examples
 #'
 #' collapse_lines(list("a message ", "in multiple", "parts"))
@@ -203,7 +203,7 @@ collapse_lines <- function(..., sep = "\n") {
 #'  check_param_* that nframe is 2.
 #'  If the function name is not the right name, it may be because of that.
 #'  So don't fear testing different values for nframes.
-#' @return NULL
+#' @return \code{NULL}
 #'
 #' @examples
 #'
@@ -431,22 +431,57 @@ check_parameter_length <- function(
 
 #' @name check_one_character
 #' @title check_one_character
+#' @description Shortcut function to check_param_type_n_length(), to check a unique character string.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return \code{NULL}
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_integer
 #' @title check_one_integer
+#' @description Shortcut function to check_param_type_n_length(), to check a unique integer value.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return \code{NULL}
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_logical
 #' @title check_one_logical
+#' @description Shortcut function to check_param_type_n_length(), to check a unique boolean.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return \code{NULL}
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_numeric
 #' @title check_one_numeric
+#' @description Shortcut function to check_param_type_n_length(), to check a unique numeric value.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return \code{NULL}
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_complex
 #' @title check_one_complex
+#' @description Shortcut function to check_param_type_n_length(), to check a unique complex value.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return \code{NULL}
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 for (.type__ in c(

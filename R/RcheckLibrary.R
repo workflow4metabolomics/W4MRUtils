@@ -13,10 +13,10 @@
 #' @title Check Errors
 #'
 #' @description check_err
-#' Generic function stop in error if problems have been encountered
+#' Generic function that stops in error if problems have been encountered, with printing of the corresponding error information.
 #'
 #' @param err_stock vector of results returned by check functions
-#' @return \code{NULL}
+#' @return \code{NULL} (function called for the "stoping" side effects)
 #'
 #' @author M.Petera
 #' @export
