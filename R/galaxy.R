@@ -39,6 +39,7 @@ mapped_chars_regex__ <- paste0(mapped_chars__, collapse = "|")
 #' @param tool_name - The name of the tool
 #' @param func - The function to be run, after galaxy header is displayed
 #' @param ... - Parameters propagated to [run_galaxy_processing]
+#' @return \code{NULL} (function called to provide checks to the execution of [run_galaxy_processing])
 #' @seealso [run_galaxy_processing]
 #'
 #' @author L.Pavot
@@ -96,6 +97,8 @@ run_galaxy_function <- function(tool_name, func, ...) {
 #'   within.
 #' @param do_traceback - logical - tells whether to produce a traceback in
 #'   case of error.
+#' @return \code{NULL} (the function only execute the inputed Galaxy-based 
+#'   process in a standardised manner)
 #' @examples
 #'
 #' write_r_file_with_content <- function(content) {
@@ -296,7 +299,7 @@ run_galaxy_processing <- function(
 #'   the system variables or not.
 #' @param show_parameters - a logical telling whether to display
 #'   the parameters or not.
-#' @return NULL
+#' @return \code{NULL}
 #'
 #' @seealso [run_galaxy_processing]
 #'
@@ -374,7 +377,7 @@ show_galaxy_header <- function(
 #' @param show_packages logical - Tells whether to display loaded packages
 #'   and attached packages.
 #' @param ellapsed NULL or a \code{character(1)} with execution duration.
-#' @return NULL
+#' @return \code{NULL}
 #'
 #' @seealso [run_galaxy_processing]
 #'
@@ -453,7 +456,7 @@ get_r_env <- function() {
 #' @description
 #' prints env variables related to R
 #'
-#' @return NULL
+#' @return \code{NULL}
 #'
 #' @examples
 #'
