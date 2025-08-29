@@ -431,7 +431,7 @@ check_parameter_length <- function(
 
 #' @name check_one_character
 #' @title check_one_character
-#' @description Shortcut function to check_param_type_n_length()
+#' @description Shortcut function to check_param_type_n_length(), to check a unique character string.
 #' @param value The parameter to test.
 #' @param ... Parameters passed out to the check_param_type_n_length() function
 #' @return NULL
@@ -442,22 +442,46 @@ check_parameter_length <- function(
 NULL
 #' @name check_one_integer
 #' @title check_one_integer
-#' @inherit check_one_character
+#' @description Shortcut function to check_param_type_n_length(), to check a unique integer value.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return NULL
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_logical
 #' @title check_one_logical
-#' @inherit check_one_character
+#' @description Shortcut function to check_param_type_n_length(), to check a unique boolean.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return NULL
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_numeric
 #' @title check_one_numeric
-#' @inherit check_one_character
+#' @description Shortcut function to check_param_type_n_length(), to check a unique numeric value.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return NULL
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_complex
 #' @title check_one_complex
-#' @inherit check_one_character
+#' @description Shortcut function to check_param_type_n_length(), to check a unique complex value.
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return NULL
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 for (.type__ in c(
