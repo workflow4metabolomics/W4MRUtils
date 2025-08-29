@@ -11,6 +11,9 @@ Description: Provides a set of utility function to prevent the spread of
     Some are meant to be replaced by real packages in the future, like
     the parse_args() function: it is here only to prepare the ground for
     more global changes in W4M scripts and tools.
+    This package is used by part of the W4M Galaxy modules, some of them  
+    being available on the community-maintained GitHub repository for 
+    Metabolomics' Galaxy tools <https://github.com/workflow4metabolomics/tools-metabolomics>. 
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
