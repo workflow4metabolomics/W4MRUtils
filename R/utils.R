@@ -431,27 +431,33 @@ check_parameter_length <- function(
 
 #' @name check_one_character
 #' @title check_one_character
-#' @inherit check_param_type_n_length
+#' @description Shortcut function to check_param_type_n_length()
+#' @param value The parameter to test.
+#' @param ... Parameters passed out to the check_param_type_n_length() function
+#' @return NULL
+#' @seealso [check_param_type_n_length]
+#' @seealso [check_parameter_type],[check_parameter_length]
+#' @author L.Pavot
 #' @export
 NULL
 #' @name check_one_integer
 #' @title check_one_integer
-#' @inherit check_param_type_n_length
+#' @inherit check_one_character
 #' @export
 NULL
 #' @name check_one_logical
 #' @title check_one_logical
-#' @inherit check_param_type_n_length
+#' @inherit check_one_character
 #' @export
 NULL
 #' @name check_one_numeric
 #' @title check_one_numeric
-#' @inherit check_param_type_n_length
+#' @inherit check_one_character
 #' @export
 NULL
 #' @name check_one_complex
 #' @title check_one_complex
-#' @inherit check_param_type_n_length
+#' @inherit check_one_character
 #' @export
 NULL
 for (.type__ in c(
