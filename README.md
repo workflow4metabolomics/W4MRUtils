@@ -1,7 +1,7 @@
 
 # W4MRUtils
 
-  - **VERSION**: 1.1.1
+  - **VERSION**: 1.2.0
 
 <!-- badges: start -->
 
@@ -49,11 +49,9 @@ Do the documentation and the referencing of the documentation for:
   - match3
   - import2
   - import3
-  - metab\_merge
   - df\_is
   - df\_force\_numeric
   - df\_read\_table
-  - generic\_filter
 
 ## Installation
 
