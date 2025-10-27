@@ -395,7 +395,8 @@ intens_check <- function(DM, SM, VM, method, chosen.stat, class.col, test.fold, 
   #Barplots for NA
   if("NA" %in% stat.list){
   graph.colors <- c("green3","palegreen3","lightblue","orangered","red")
-  graphics::par(mar = c(5.1, 4.1, 4.1, 8.1), xpd = TRUE)
+  oldpar <- graphics::par(mar = c(5.1, 4.1, 4.1, 8.1), xpd = TRUE)
+  on.exit(graphics::par(oldpar)) 
 
   bp = graphics::barplot(data_bp, col = graph.colors, main = "Proportion of NA", xlab = "Classes", ylab = "Variables")
   graphics::legend("topright", fill = graph.colors, rownames(data_bp), inset = c(-0.3,0))

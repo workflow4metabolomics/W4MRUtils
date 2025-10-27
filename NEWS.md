@@ -1,4 +1,4 @@
-# W4MRUtils 1.2.0
+# W4MRUtils 1.2.1
 
 ## Major changes
 
@@ -6,6 +6,6 @@
 
 ## Minor improvements and bug fixes
 
-* Adjustments in info messages
+* Adjustments in information messages
 
 * Fixing issues in the documentation following CRAN feedback
