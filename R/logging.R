@@ -38,51 +38,6 @@ w4m_loggers__ <- new.env()
 #' @return A new W4MLogger instance if it did not exist or if recreate is
 #' TRUE. Otherwise, a new W4MLogger instance.
 #'
-#' @examples
-#' ## let's say our program is divided in three big tasks:
-#' ##   - the parsing
-#' ##   - the processing
-#' ##   - the output writing
-#' parser_logger <- W4MRUtils::get_logger("Parser")
-#' process_logger <- W4MRUtils::get_logger("Processing")
-#' write_logger <- W4MRUtils::get_logger("Writer")
-#' input_path <- "/home/anyone/input.csv"
-#' parser_logger$info(paste("Parsing the input file at", input_path))
-#' parser_logger$debug("Input extension detected: csv")
-#' parser_logger$debug("The csv parser program will be used")
-#' ## do the parsing...
-#' input <- list(a=1:5, b=5:10, c=8:2)
-#' parser_logger$info("Parsing succeed")
-#' process_logger$info("Starting the processing of:", input)
-#' process_logger$debug("The processing has started at...")
-## do the processing...
-#' result <- as.list(input)
-#' process_logger$debug("The processing has finished at...")
-#' process_logger$info("Processing finished in x seconds.")
-#' outfile <- "/home/anyone/output.tsv"
-#' write_logger$info(paste("Creating the output in", outfile))
-#'
-#' ## we detected that the input was csv and the out was tsv:
-#' ## but it is not a blocking problem
-#' write_logger$warning("The input and output file's extensions are different")
-#' write_logger$debug("The output will be casted from csv to tsv")
-#'
-#' ## we try to write the file, but it fails
-#' tryCatch({
-#'   ## writing the output file failed with this error:
-#'   stop(sprintf("I/O Error: %s is not writable.", outfile))
-#' }, error = function(e) {
-#'   write_logger$error(e$message)
-#'   write_logger$error("Writing output file aborted.")
-#'   ## quit(save = "no", status = 42)
-#' })
-#'
-#' ## note that debug output were not written. To show debug logs
-#' ## we have to active it (disabled by default):
-#'
-#' write_logger$set_debug()
-#' write_logger$debug("The debug outputs are now visible!")
-#'
 #' @author L.Pavot
 #' @export
 get_logger <- function(name, recreate = FALSE, ...) {

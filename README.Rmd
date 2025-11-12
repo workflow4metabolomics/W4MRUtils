@@ -27,7 +27,7 @@ commandArgs <- function() { #nolint
 
 # W4MRUtils
 
- - **VERSION**: 1.1.1
+ - **VERSION**: 1.2.1
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -75,11 +75,9 @@ Do the documentation and the referencing of the documentation for:
  - match3
  - import2
  - import3
- - metab_merge
  - df_is
  - df_force_numeric
  - df_read_table
- - generic_filter
 
 
 ## Installation

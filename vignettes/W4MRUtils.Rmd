@@ -74,6 +74,7 @@ Globally, you will find functions enabling the following:
 - managing computing information and/or error messages (in a user-targeted way)
 - merging a dataMatrix table with a corresponding metadata table
 - filtering a data set following the W4M 3-tables format
+- checking the intensities of data with basic indice computations
 
 
 
