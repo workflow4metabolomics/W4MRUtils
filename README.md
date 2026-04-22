@@ -1,10 +1,9 @@
 
 # W4MRUtils
 
-  - **VERSION**: 1.2.1
+- **VERSION**: 1.2.2
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 W4MRUtils is a R packages provided by W4M to ease galaxy tools writing.
@@ -12,46 +11,45 @@ It contains some utility functions that will help you in common tasks.
 
 ## Parameters
 
-  - Parsing parameters with parse\_args (easier)
-  - Parsing parameters with optparse\_parameters (better)
-  - Enforce checking on parameters with check\_param\_type\_n\_length
+- Parsing parameters with parse_args (easier)
+- Parsing parameters with optparse_parameters (better)
+- Enforce checking on parameters with check_param_type_n_length
 
 ## R script chores
 
-  - Silently load a package with shy\_lib
-  - Sourcing relative file with source\_local
+- Silently load a package with shy_lib
+- Sourcing relative file with source_local
 
 ## Galaxy
 
-  - Am I in a galaxy env? see in\_galaxy\_env
-  - Show log headers with show\_galaxy\_header
-  - Show log footer with show\_galaxy\_footer
-  - Execute a function with run\_galaxy\_processing
-  - Restore parameters names, modified by galaxy with
-    unmangle\_galaxy\_param
+- Am I in a galaxy env? see in_galaxy_env
+- Show log headers with show_galaxy_header
+- Show log footer with show_galaxy_footer
+- Execute a function with run_galaxy_processing
+- Restore parameters names, modified by galaxy with
+  unmangle_galaxy_param
 
 ## Logfiles
 
-  - What is a logger? - See logging section what-is-a-logger)
-  - How to create a logger? - See logging section
-    how-to-create-a-logger)
-  - How to create a log file? - See logging section
-    how-to-create-a-log-file)
+- What is a logger? - See logging section what-is-a-logger)
+- How to create a logger? - See logging section how-to-create-a-logger)
+- How to create a log file? - See logging section
+  how-to-create-a-log-file)
 
 ## TODO
 
 Do the documentation and the referencing of the documentation for:
 
-  - stock\_id
-  - reproduce\_id
-  - check\_err
-  - match2
-  - match3
-  - import2
-  - import3
-  - df\_is
-  - df\_force\_numeric
-  - df\_read\_table
+- stock_id
+- reproduce_id
+- check_err
+- match2
+- match3
+- import2
+- import3
+- df_is
+- df_force_numeric
+- df_read_table
 
 ## Installation
 

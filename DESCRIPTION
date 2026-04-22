@@ -1,6 +1,6 @@
 Package: W4MRUtils
 Title: Useful Functions for Harmonized W4M Tool Development
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: c(
     person("Lain", "Pavot", "", "lain.pavot@inrae.fr", role = c("aut")),
     person("Melanie", "Petera", "", "melanie.petera@inrae.fr", role = c("aut", "cre")),
