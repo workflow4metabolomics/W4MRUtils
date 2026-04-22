@@ -30,9 +30,11 @@ optparse_flag <- function(
 ) {
   return(list(
     opt_str = short,
-    action = "store_true",
+    type = "logical",
+    action = "store",
     help = help,
-    default = default
+    default = default,
+    metavar = "flag"
   ))
 }
 

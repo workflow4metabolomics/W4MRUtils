@@ -60,10 +60,7 @@ test_that("optparse everything", {
   )
   testthat::expect_error(
     optparse_parameters(a = optparse_flag(), args = list("--args")),
-    regexp = paste0(
-      "Error in getopt(spec = spec, opt = args) : ",
-      "long flag \"args\" is invalid"
-    ),
+    regexp = "long flag \"args\" is invalid",
     fixed = TRUE
   )
 
