@@ -1,3 +1,10 @@
+# W4MRUtils 1.2.2
+
+## Minor improvements and bug fixes
+
+* Fixing the optparse_flag() function for appropriate use, following the highlight made by the v1.8.2 of the 'optparse' package (dependency)
+
+
 # W4MRUtils 1.2.1
 
 ## Major changes
